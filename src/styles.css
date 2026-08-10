@@ -188,10 +188,7 @@
   ::selection {
     background: color-mix(in oklab, var(--brand) 25%, transparent);
   }
-  @font-face {
-    font-family: 'Plus Jakarta Sans';
-    font-display: swap;
-  }
+
 }
 
 @media (max-width: 640px) {
@@ -426,6 +423,17 @@
   }
   50% {
     filter: brightness(1.15);
+  }
+}
+
+@utility party-glow {
+  animation: party-glow 3s ease-in-out infinite;
+}
+
+@utility party-hover {
+  &:hover {
+    border-color: var(--party-pink);
+    box-shadow: 0 0 20px color-mix(in oklab, var(--party-pink) 30%, transparent);
   }
 }
 

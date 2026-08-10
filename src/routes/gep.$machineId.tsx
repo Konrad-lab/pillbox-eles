@@ -71,7 +71,7 @@ function MachinePage() {
           <>
             <header
               className={`glass-strong mt-5 rounded-[1.5rem] p-5 sm:mt-7 sm:rounded-[2.5rem] sm:p-9 ${
-                machine.edition === "festival" ? "party-surface" : ""
+                machine.edition === "festival" ? "party-surface party-glow" : ""
               }`}
             >
               {machine.edition === "festival" && (
@@ -138,7 +138,7 @@ function ProductCard({ product, edition }: { product: MachineProduct; edition: M
         to="/termek/$productId"
         params={{ productId: product.id }}
         className={`hover-sheen group flex h-full flex-col rounded-[1.25rem] p-5 sm:rounded-[1.75rem] ${
-          isParty ? "party-surface" : "glass-panel"
+          isParty ? "party-surface party-glow party-hover" : "glass-panel"
         }`}
       >
         <div className="flex items-start justify-between gap-3">
@@ -165,10 +165,12 @@ function ProductCard({ product, edition }: { product: MachineProduct; edition: M
             {formatPrice(product.price)}
           </span>
           <span className={`inline-flex items-center gap-1.5 text-sm font-semibold ${
-            isParty ? "text-foreground" : "text-brand-deep"
+            isParty ? "text-[var(--party-pink)]" : "text-brand-deep"
           }`}>
             Részletek
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            <ArrowRight className={`h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 ${
+              isParty ? "text-[var(--party-pink)]" : ""
+            }`} />
           </span>
         </div>
       </Link>

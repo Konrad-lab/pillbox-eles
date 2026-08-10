@@ -136,7 +136,7 @@ export function MapSection() {
                     <text
                       y={-27}
                       textAnchor="middle"
-                      className="fill-foreground text-[15px] font-semibold"
+                      className={`text-[15px] font-semibold ${festival ? "fill-[var(--party-pink)]" : "fill-foreground"}`}
                       pointerEvents="none"
                     >
                       {machine.city}
@@ -196,7 +196,7 @@ function MachinePanel({ machine, onClose }: { machine: Machine; onClose: () => v
       exit={{ opacity: 0, x: 24 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className={`glass-strong overflow-hidden rounded-[1.5rem] sm:rounded-[2.5rem] ${
-        festival ? "party-surface" : ""
+        festival ? "party-surface party-glow" : ""
       }`}
     >
       <div className="flex items-start justify-between gap-3 p-5 pb-0 sm:p-7 sm:pb-0">
@@ -215,28 +215,36 @@ function MachinePanel({ machine, onClose }: { machine: Machine; onClose: () => v
 
       <div className="p-5 pt-3 sm:p-7 sm:pt-4">
         <p className="flex items-start gap-2 text-sm text-muted-foreground">
-          <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
+          <MapPin className={`mt-0.5 h-4 w-4 shrink-0 ${festival ? "text-foreground" : "text-brand"}`} />
           {machine.address}, {machine.city}
         </p>
         {machine.period && (
           <p className="mt-1.5 flex items-center gap-2 text-sm font-semibold">
-            <CalendarDays className="h-4 w-4 shrink-0 text-brand" />
+            <CalendarDays className={`h-4 w-4 shrink-0 ${festival ? "text-foreground" : "text-brand"}`} />
             {machine.period}
           </p>
         )}
         <p className="mt-1.5 flex items-center gap-2 text-sm text-muted-foreground">
-          <Clock className="h-4 w-4 shrink-0 text-brand" />
+          <Clock className={`h-4 w-4 shrink-0 ${festival ? "text-foreground" : "text-brand"}`} />
           {machine.availability}
         </p>
 
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{machine.description}</p>
 
         <p className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
-          <PackageSearch className="h-4 w-4 text-brand" />
+          <PackageSearch className={`h-4 w-4 ${festival ? "text-foreground" : "text-brand"}`} />
           {machine.products.length} termék · frissítve: {machine.lastUpdated ?? "-"}
         </p>
 
-        <Button asChild size="lg" className="mt-6 h-12 w-full rounded-full">
+        <Button 
+          asChild 
+          size="lg" 
+          className={`mt-6 h-12 w-full rounded-full ${
+            festival 
+              ? "bg-gradient-to-r from-[var(--party-ink)] to-[var(--party-pink)] hover:from-[var(--party-ink)] hover:to-[var(--party-pink)]" 
+              : ""
+          }`}
+        >
           <Link to="/gep/$machineId" params={{ machineId: machine.id }}>
             Termékek megtekintése
           </Link>
