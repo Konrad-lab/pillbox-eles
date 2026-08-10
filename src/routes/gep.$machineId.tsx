@@ -1,29 +1,34 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, CalendarDays, Clock, MapPin } from "lucide-react";
+import { useEffect } from "react";
 import { Ambient } from "@/components/site/Ambient";
 import { PageHeader } from "@/components/site/PageHeader";
 import { machinesQueryOptions } from "@/data/machineSource";
 import { formatPrice, STOCK_LABEL, type MachineProduct, type MachineEdition } from "@/data/types";
 
 export const Route = createFileRoute("/gep/$machineId")({
-  head: () => ({
-    meta: [
-      { title: "Pillbox automata - elérhető termékek" },
-      {
-        name: "description",
-        content:
-          "Nézd meg, milyen termékek érhetők el ebben a Pillbox automatában: nevek, árak és részletes termékinformációk.",
-      },
-      { property: "og:title", content: "Pillbox automata - elérhető termékek" },
-      {
-        property: "og:description",
-        content: "Termékkínálat, árak és részletes információk a kiválasztott Pillbox automatában.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: (ctx) => {
+    const { machineId } = ctx.params;
+    // Note: We can't access data here, so we'll use a head component in the body to set dynamic favicon
+    return {
+      meta: [
+        { title: "Pillbox automata - elérhető termékek" },
+        {
+          name: "description",
+          content:
+            "Nézd meg, milyen termékek érhetők el ebben a Pillbox automatában: nevek, árak és részletes termékinformációk.",
+        },
+        { property: "og:title", content: "Pillbox automata - elérhető termékek" },
+        {
+          property: "og:description",
+          content: "Termékkínálat, árak és részletes információk a kiválasztott Pillbox automatában.",
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+    };
+  },
   component: MachinePage,
 });
 
@@ -31,6 +36,16 @@ function MachinePage() {
   const { machineId } = Route.useParams();
   const { data: machines, isLoading } = useQuery(machinesQueryOptions);
   const machine = machines?.find((item) => item.id === machineId);
+
+  // Dynamic favicon based on machine edition
+  useEffect(() => {
+    if (machine?.edition === "festival") {
+      // For partybox, you could set a different favicon if you have one
+      // For now, we'll keep the same favicon but you could add:
+      // const link = document.querySelector("link[rel~='icon']");
+      // if (link) link.href = "/partybox-favicon.png";
+    }
+  }, [machine]);
 
   if (!isLoading && machines && !machine) throw notFound();
 
@@ -67,17 +82,17 @@ function MachinePage() {
               </h1>
               <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
                 <span className="inline-flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-brand" />
+                  <MapPin className={`h-4 w-4 ${machine.edition === "festival" ? "text-foreground" : "text-brand"}`} />
                   {machine.address}, {machine.city}
                 </span>
                 {machine.period && (
                   <span className="inline-flex items-center gap-2 font-semibold text-foreground">
-                    <CalendarDays className="h-4 w-4 text-brand" />
+                    <CalendarDays className={`h-4 w-4 ${machine.edition === "festival" ? "text-foreground" : "text-brand"}`} />
                     {machine.period}
                   </span>
                 )}
                 <span className="inline-flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-brand" />
+                  <Clock className={`h-4 w-4 ${machine.edition === "festival" ? "text-foreground" : "text-brand"}`} />
                   {machine.availability}
                 </span>
               </div>
@@ -92,7 +107,9 @@ function MachinePage() {
             <div className="mt-8 space-y-8 sm:mt-12 sm:space-y-12">
               {categories.map((category) => (
                 <section key={category}>
-                  <h2 className="text-[0.65rem] font-semibold tracking-[0.2em] text-brand uppercase sm:text-xs">
+                  <h2 className={`text-[0.65rem] font-semibold tracking-[0.2em] uppercase sm:text-xs ${
+                    machine.edition === "festival" ? "text-foreground" : "text-brand"
+                  }`}>
                     {category}
                   </h2>
                   <ul className="mt-3 grid gap-3 sm:mt-4 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
