@@ -50,9 +50,9 @@ export interface MachineRow {
   products: string;
   availability: string;
   last_updated?: string;
-  /** "health" (default) or "festival" (Pillbox–Partybox edition). */
+  /** "health" (default) or "festival" (Pillbox-Partybox edition). */
   edition?: MachineEdition;
-  /** Optional operating window, e.g. "2026.08.26–30." */
+  /** Optional operating window, e.g. "2026.08.26-30." */
   period?: string;
 }
 

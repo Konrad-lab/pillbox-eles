@@ -11,13 +11,13 @@ import { Footer } from "@/components/site/Footer";
 export const Route = createFileRoute("/pillbox")({
   head: () => ({
     meta: [
-      { title: "Pillbox – Egészségügyi automata hálózat Magyarországon" },
+      { title: "Pillbox - Egészségügyi automata hálózat Magyarországon" },
       {
         name: "description",
         content:
-          "A Pillbox okos automatái vitaminokat, elsősegély- és higiéniai termékeket tesznek elérhetővé 0–24, gyógyszerészi szakmai háttérrel.",
+          "A Pillbox okos automatái vitaminokat, elsősegély- és higiéniai termékeket tesznek elérhetővé 0-24, gyógyszerészi szakmai háttérrel.",
       },
-      { property: "og:title", content: "Pillbox – Egészség, karnyújtásnyira" },
+      { property: "og:title", content: "Pillbox - Egészség, karnyújtásnyira" },
       {
         property: "og:description",
         content:

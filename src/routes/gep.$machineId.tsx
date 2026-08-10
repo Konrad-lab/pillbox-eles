@@ -4,18 +4,18 @@ import { ArrowLeft, ArrowRight, CalendarDays, Clock, MapPin } from "lucide-react
 import { Ambient } from "@/components/site/Ambient";
 import { PageHeader } from "@/components/site/PageHeader";
 import { machinesQueryOptions } from "@/data/machineSource";
-import { formatPrice, STOCK_LABEL, type MachineProduct } from "@/data/types";
+import { formatPrice, STOCK_LABEL, type MachineProduct, type MachineEdition } from "@/data/types";
 
 export const Route = createFileRoute("/gep/$machineId")({
   head: () => ({
     meta: [
-      { title: "Pillbox automata – elérhető termékek" },
+      { title: "Pillbox automata - elérhető termékek" },
       {
         name: "description",
         content:
           "Nézd meg, milyen termékek érhetők el ebben a Pillbox automatában: nevek, árak és részletes termékinformációk.",
       },
-      { property: "og:title", content: "Pillbox automata – elérhető termékek" },
+      { property: "og:title", content: "Pillbox automata - elérhető termékek" },
       {
         property: "og:description",
         content: "Termékkínálat, árak és részletes információk a kiválasztott Pillbox automatában.",
@@ -85,7 +85,7 @@ function MachinePage() {
                 {machine.description}
               </p>
               <p className="mt-4 text-xs text-muted-foreground">
-                {machine.products.length} termék · frissítve: {machine.lastUpdated ?? "—"}
+                {machine.products.length} termék · frissítve: {machine.lastUpdated ?? "-"}
               </p>
             </header>
 
@@ -99,7 +99,7 @@ function MachinePage() {
                     {machine.products
                       .filter((product) => product.category === category)
                       .map((product) => (
-                        <ProductCard key={product.id} product={product} />
+                        <ProductCard key={product.id} product={product} edition={machine.edition} />
                       ))}
                   </ul>
                 </section>
@@ -112,13 +112,17 @@ function MachinePage() {
   );
 }
 
-function ProductCard({ product }: { product: MachineProduct }) {
+function ProductCard({ product, edition }: { product: MachineProduct; edition: MachineEdition }) {
+  const isParty = edition === "festival";
+  
   return (
     <li>
       <Link
         to="/termek/$productId"
         params={{ productId: product.id }}
-        className="hover-sheen glass-panel group flex h-full flex-col rounded-[1.25rem] p-5 sm:rounded-[1.75rem]"
+        className={`hover-sheen group flex h-full flex-col rounded-[1.25rem] p-5 sm:rounded-[1.75rem] ${
+          isParty ? "party-surface" : "glass-panel"
+        }`}
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -143,7 +147,9 @@ function ProductCard({ product }: { product: MachineProduct }) {
           <span className="text-lg font-extrabold tracking-tight">
             {formatPrice(product.price)}
           </span>
-          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-deep">
+          <span className={`inline-flex items-center gap-1.5 text-sm font-semibold ${
+            isParty ? "text-foreground" : "text-brand-deep"
+          }`}>
             Részletek
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </span>

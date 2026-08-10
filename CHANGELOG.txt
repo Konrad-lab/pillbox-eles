@@ -1,7 +1,7 @@
-Pillbox – CHANGELOG
+Pillbox - CHANGELOG
 ===================
 
-Version 2.2.0 — 2026-08-10
+Version 2.2.0 - 2026-08-10
 --------------------------
 
 Google Sheets Integration
@@ -32,15 +32,15 @@ Technical Improvements
 - Cleaned project documentation (README.md, AGENTS.md)
 - Removed .lovable directory and related files
 
-Version 2.1.0 — 2026-08-09
+Version 2.1.0 - 2026-08-09
 --------------------------
 
-Fesztivál automata (Pillbox–Partybox edition)
-- Új automata a térképen: PB-002 "Pillbox–Partybox Alsóörs" (Tábor Fesztivál,
-  2026.08.26–30., 0–24 a fesztivál ideje alatt), 12 termékkel, 3 polcon.
+Fesztivál automata (Pillbox-Partybox edition)
+- Új automata a térképen: PB-002 "Pillbox-Partybox Alsóörs" (Tábor Fesztivál,
+  2026.08.26-30., 0-24 a fesztivál ideje alatt), 12 termékkel, 3 polcon.
 - A gép sor kapott egy `edition` ("health" | "festival") és egy `period`
   mezőt, így a jövőbeni táblázat-export is jelölni tudja a fesztiválgépeket.
-- Fekete–rózsaszín Partybox logó jelölő a térképen (src/assets/logo-partybox.png),
+- Fekete-rózsaszín Partybox logó jelölő a térképen (src/assets/logo-partybox.png),
   Partybox chip és rózsaszín keret a gép panelen és a géphez tartozó oldalon.
 - Külön Partybox aloldal egyelőre nem készült.
 
@@ -52,7 +52,7 @@ Landing
 Térkép
 - Magyarország határa immár a valós (nyilvános GeoJSON-ból egyszerűsített,
   ~687 pontos) országhatár, helyes szélesség/hosszúság arányban
-  (src/data/hungaryOutline.ts, előre kiszámolt SVG path – nincs futásidejű
+  (src/data/hungaryOutline.ts, előre kiszámolt SVG path - nincs futásidejű
   vetítési költség).
 - Finom, csak transform/opacity alapú jelölő-halo animáció (GPU-barát),
   hover- és fókuszállapot, prefers-reduced-motion támogatással.
@@ -68,7 +68,7 @@ Teljesítmény / kompatibilitás
 
 
 
-Version 2.0.0 — 2026-08-08
+Version 2.0.0 - 2026-08-08
 --------------------------
 
 Vending machine section (walkthrough removed, product list added)
@@ -159,12 +159,12 @@ Code audit / quality
   the shadcn/ui component library, so none were removed (removal would break
   the shared UI primitives).
 
-Version 1.1.0 — earlier
+Version 1.1.0 - earlier
 -----------------------
 - Unique hover animation system (tilt, sheen, swell, ring bloom, drift, pop,
   underline grow) and zero-config Vercel hosting (vercel.json).
 
-Version 1.0.0 — initial prototype
+Version 1.0.0 - initial prototype
 ---------------------------------
 - Landing selection screen (PillBox / PillBox Festival), main Pillbox site
   (hero, features, about, map, contact, footer), festival placeholder page,

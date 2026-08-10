@@ -28,7 +28,7 @@ export function MapSection() {
 
 
   return (
-    <section id="map" className="section-shell py-16 sm:py-28">
+    <section id="map" className="section-shell py-16 sm:py-28" style={{ containIntrinsicSize: "0 600px", contentVisibility: "auto" }}>
       <Reveal className="mx-auto max-w-2xl text-center">
         <p className="text-[0.65rem] font-semibold tracking-[0.2em] text-brand uppercase sm:text-xs">
           Térkép
@@ -52,15 +52,12 @@ export function MapSection() {
             >
               <defs>
                 <clipPath id="pb-marker-clip">
-                  <circle cx="0" cy="0" r="15" />
+                  <rect x="-15" y="-15" width="30" height="30" rx="6" ry="6" />
                 </clipPath>
                 <linearGradient id="pb-land" x1="0" y1="0" x2="0.6" y2="1">
                   <stop offset="0%" stopColor="var(--brand-tint)" />
                   <stop offset="100%" stopColor="var(--muted)" />
                 </linearGradient>
-                <filter id="logo-orange-purple">
-                  <feColorMatrix type="matrix" values="1 0 0 0 0.9  0 1 0 0 0.4  0 0 1 0 0.6  0 0 0 1 0" />
-                </filter>
               </defs>
 
               <path
@@ -90,7 +87,7 @@ export function MapSection() {
 
                     role="button"
                     tabIndex={0}
-                    aria-label={`${machine.name} – termékek megtekintése`}
+                    aria-label={`${machine.name} - termékek megtekintése`}
                     onKeyDown={(event) => {
                       if (event.key === "Enter" || event.key === " ") {
                         event.preventDefault();
@@ -100,19 +97,29 @@ export function MapSection() {
                   >
                     {/* Generous, invisible tap area (≈48px touch target) */}
                     <circle r={38} fill="transparent" stroke="transparent" />
-                    <circle
+                    <rect
                       className="map-marker-halo"
-                      r={19}
+                      x={-18}
+                      y={-18}
+                      width={36}
+                      height={36}
+                      rx={8}
+                      ry={8}
                       fill="none"
-                      stroke={festival ? "var(--party-pink)" : "#e65100"}
+                      stroke={festival ? "var(--party-pink)" : "var(--brand)"}
                       strokeWidth={2}
                       opacity={0.45}
                       pointerEvents="none"
                     />
-                    <circle
-                      r={active ? 21 : 19}
-                      fill={festival ? "var(--party-ink)" : "white"}
-                      stroke={festival ? "var(--party-pink)" : "#9c27b0"}
+                    <rect
+                      x={-(active ? 20 : 18)}
+                      y={-(active ? 20 : 18)}
+                      width={active ? 40 : 36}
+                      height={active ? 40 : 36}
+                      rx={8}
+                      ry={8}
+                      fill={festival ? "var(--party-pink)" : "white"}
+                      stroke={festival ? "var(--party-pink)" : "var(--brand)"}
                       strokeWidth={active ? 3 : 2}
                       pointerEvents="none"
                     />
@@ -125,7 +132,6 @@ export function MapSection() {
                       clipPath="url(#pb-marker-clip)"
                       preserveAspectRatio="xMidYMid slice"
                       pointerEvents="none"
-                      filter={festival ? "none" : "url(#logo-orange-purple)"}
                     />
                     <text
                       y={-27}
@@ -227,7 +233,7 @@ function MachinePanel({ machine, onClose }: { machine: Machine; onClose: () => v
 
         <p className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
           <PackageSearch className="h-4 w-4 text-brand" />
-          {machine.products.length} termék · frissítve: {machine.lastUpdated ?? "—"}
+          {machine.products.length} termék · frissítve: {machine.lastUpdated ?? "-"}
         </p>
 
         <Button asChild size="lg" className="mt-6 h-12 w-full rounded-full">

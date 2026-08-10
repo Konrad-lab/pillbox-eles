@@ -73,10 +73,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Pillbox – Egészségügyi automata hálózat" },
-      { name: "description", content: "A Pillbox okos automatái vitaminokat, elsősegély- és higiéniai termékeket tesznek elérhetővé 0–24, gyógyszerészi szakmai háttérrel." },
+      { title: "Pillbox - Egészségügyi automata hálózat" },
+      { name: "description", content: "A Pillbox okos automatái vitaminokat, elsősegély- és higiéniai termékeket tesznek elérhetővé 0-24, gyógyszerészi szakmai háttérrel." },
       { name: "author", content: "RAGAMINI Kft." },
-      { property: "og:title", content: "Pillbox – Egészség, karnyújtásnyira" },
+      { property: "og:title", content: "Pillbox - Egészség, karnyújtásnyira" },
       { property: "og:description", content: "Találd meg a hozzád legközelebbi Pillbox automatát, és nézd meg az elérhető termékeket és árakat." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -89,9 +89,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
-        rel: "stylesheet",
+        rel: "preload",
+        as: "style",
         href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
       },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
+        media: "print",
+        onLoad: "this.media='all'",
+      },
+      <style>{`
+        body {
+          font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        }
+      `}</style>,
       { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
   }),

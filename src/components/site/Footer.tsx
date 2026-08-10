@@ -71,7 +71,7 @@ export function Footer() {
       <div className="border-t border-white/50">
         <div className="section-shell flex flex-col gap-2 py-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:py-6">
           <span>© {new Date().getFullYear()} RAGAMINI Kft. Minden jog fenntartva.</span>
-          <span>Prototípus – demonstrációs célú tartalommal.</span>
+          <span>Prototípus - demonstrációs célú tartalommal.</span>
         </div>
       </div>
     </footer>

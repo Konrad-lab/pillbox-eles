@@ -64,7 +64,7 @@ Smooth scrolling
 
 Loading transitions
 
-Don't overdo the animations—they should feel elegant and premium.
+Don't overdo the animations - they should feel elegant and premium.
 
 Pages / Sections
 
@@ -90,7 +90,7 @@ Below the hero:
 
 Short introduction
 
-3–4 feature cards such as:
+3-4 feature cards such as:
 
 Fast
 
@@ -257,13 +257,13 @@ Overall Goal
 
 The website should immediately communicate trust, health, convenience, and innovation. It should feel comparable to modern healthcare startups or premium technology companies rather than a traditional pharmacy website.
 
-Prioritize excellent UI/UX, smooth interactions, premium animations, and a clean responsive design. Since this is only a prototype, placeholder content is completely acceptable—the visual quality and user experience are the main priorities.
+Prioritize excellent UI/UX, smooth interactions, premium animations, and a clean responsive design. Since this is only a prototype, placeholder content is completely acceptable - the visual quality and user experience are the main priorities.
 
 # Data Management Design the application so that vending machine data is loaded dynamically instead of being hardcoded. For this prototype, assume all vending machine information comes from a single Excel spreadsheet (this may later become Google Sheets or a database). Each vending machine should include information such as: - Machine ID - Name - Address - Latitude - Longitude - Photo - Description - Available product categories - Individual products - Stock status (optional) - Last updated date (optional) When the Excel file is updated, the website should automatically reflect those changes without requiring manual edits to the code. Build the architecture so that replacing the Excel file updates machine locations, product lists, images, and descriptions across the website. For now, use mock data that represents the future Excel structure. The code should be clean, modular, and ready for future backend integration (Google Sheets API, Excel parser, REST API, or database).
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Prefer working locally? You need Node.js and npm - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
 git clone <this-repository-url>

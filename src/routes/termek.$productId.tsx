@@ -9,13 +9,13 @@ import { formatPrice, STOCK_LABEL } from "@/data/types";
 export const Route = createFileRoute("/termek/$productId")({
   head: () => ({
     meta: [
-      { title: "Termékinformáció – Pillbox" },
+      { title: "Termékinformáció - Pillbox" },
       {
         name: "description",
         content:
           "Részletes termékinformáció a Pillbox automatákban elérhető termékekről: ár, kiszerelés és leírás.",
       },
-      { property: "og:title", content: "Termékinformáció – Pillbox" },
+      { property: "og:title", content: "Termékinformáció - Pillbox" },
       {
         property: "og:description",
         content: "Ár, kiszerelés és részletes leírás a Pillbox automaták termékeiről.",
@@ -42,6 +42,8 @@ function ProductPage() {
     }))
     .filter((row) => row.entry);
 
+  const isPartyProduct = availability.some(({ machine }) => machine.edition === "festival");
+
   return (
     <main className="relative min-h-[100svh] pb-16 sm:pb-24">
       <Ambient />
@@ -60,11 +62,15 @@ function ProductPage() {
           <p className="mt-10 text-sm text-muted-foreground">Termék betöltése…</p>
         ) : (
           <div className="mt-5 grid gap-4 sm:mt-7 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">
-            <article className="glass-strong rounded-[1.5rem] p-5 sm:rounded-[2.5rem] sm:p-9">
+            <article className={`rounded-[1.5rem] p-5 sm:rounded-[2.5rem] sm:p-9 ${
+              isPartyProduct ? "party-surface" : "glass-strong"
+            }`}>
               <h1 className="text-2xl font-extrabold tracking-tight text-balance sm:text-4xl">
                 {product.name}
               </h1>
-              <p className="mt-3 text-2xl font-extrabold tracking-tight text-brand-deep sm:text-3xl">
+              <p className={`mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl ${
+                isPartyProduct ? "text-foreground" : "text-brand-deep"
+              }`}>
                 {formatPrice(product.price)}
               </p>
               <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
@@ -100,7 +106,9 @@ function ProductPage() {
               </p>
             </article>
 
-            <aside className="glass-panel h-fit rounded-[1.5rem] p-5 sm:rounded-[2.5rem] sm:p-7">
+            <aside className={`h-fit rounded-[1.5rem] p-5 sm:rounded-[2.5rem] sm:p-7 ${
+              isPartyProduct ? "party-surface" : "glass-panel"
+            }`}>
               <h2 className="text-sm font-semibold">Hol érhető el?</h2>
               {availability.length === 0 ? (
                 <p className="mt-3 text-sm text-muted-foreground">

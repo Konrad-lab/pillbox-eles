@@ -21,7 +21,7 @@ const PILLARS = [
 
 export function About() {
   return (
-    <section id="about" className="relative overflow-hidden py-16 sm:py-28">
+    <section id="about" className="relative overflow-hidden py-16 sm:py-28" style={{ containIntrinsicSize: "0 500px", contentVisibility: "auto" }}>
       <div className="section-shell">
         <div className="grid gap-10 sm:gap-14 lg:grid-cols-[0.9fr_1.1fr]">
           <Reveal>

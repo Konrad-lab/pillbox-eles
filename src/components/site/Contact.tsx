@@ -11,7 +11,7 @@ const COMPANY = {
 
 export function Contact() {
   return (
-    <section id="contact" className="relative overflow-hidden py-16 sm:py-28">
+    <section id="contact" className="relative overflow-hidden py-16 sm:py-28" style={{ containIntrinsicSize: "0 500px", contentVisibility: "auto" }}>
       <div className="section-shell">
         <Reveal className="mx-auto max-w-2xl text-center">
           <p className="text-[0.65rem] font-semibold tracking-[0.2em] text-brand uppercase sm:text-xs">
@@ -21,7 +21,7 @@ export function Contact() {
             Lépj kapcsolatba velünk
           </h2>
           <p className="mt-3 text-sm text-muted-foreground sm:mt-4 sm:text-base">
-            Partnerség, telepítés vagy kérdés – elérhetőségeink alább.
+            Partnerség, telepítés vagy kérdés - elérhetőségeink alább.
           </p>
         </Reveal>
 

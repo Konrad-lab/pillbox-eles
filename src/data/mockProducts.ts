@@ -1,7 +1,7 @@
 import type { ProductRow } from "./types";
 
 /**
- * Permanent product catalogue — shaped exactly like the "products" sheet.
+ * Permanent product catalogue - shaped exactly like the "products" sheet.
  * Swapping this array for a Google Sheets / Docs API fetch requires no
  * changes anywhere else in the app (see `productCatalogSource`).
  */
@@ -115,7 +115,7 @@ export const MOCK_PRODUCT_ROWS: ProductRow[] = [
     category: "Szezonális",
     short_info: "Szénanátha és allergiás tünetek ellen.",
     description:
-      "Antihisztamin tabletta szezonális allergiás tünetek – tüsszögés, orrfolyás, viszkető szem – enyhítésére. A kockázatokról és a mellékhatásokról olvassa el a betegtájékoztatót, vagy kérdezze meg kezelőorvosát, gyógyszerészét.",
+      "Antihisztamin tabletta szezonális allergiás tünetek - tüsszögés, orrfolyás, viszkető szem - enyhítésére. A kockázatokról és a mellékhatásokról olvassa el a betegtájékoztatót, vagy kérdezze meg kezelőorvosát, gyógyszerészét.",
     package_size: "10 db tabletta",
   },
   {
@@ -135,7 +135,7 @@ export const MOCK_PRODUCT_ROWS: ProductRow[] = [
     category: "Mindennapi egészség",
     short_info: "Folyadék- és ásványianyag-pótlás.",
     description:
-      "Cukormentes elektrolit italpor nátriummal, káliummal és magnéziummal – sport, hőség vagy betegség utáni rehidratáláshoz.",
+      "Cukormentes elektrolit italpor nátriummal, káliummal és magnéziummal - sport, hőség vagy betegség utáni rehidratáláshoz.",
     package_size: "6 tasak",
   },
   {

@@ -188,6 +188,16 @@
   ::selection {
     background: color-mix(in oklab, var(--brand) 25%, transparent);
   }
+  @font-face {
+    font-family: 'Plus Jakarta Sans';
+    font-display: swap;
+  }
+}
+
+@media (max-width: 640px) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 @utility glass-panel {
@@ -195,6 +205,10 @@
   backdrop-filter: blur(18px) saturate(150%);
   border: 1px solid color-mix(in oklab, white 70%, var(--brand-soft));
   box-shadow: var(--shadow-glass);
+  @media (max-width: 640px) {
+    backdrop-filter: blur(8px) saturate(120%);
+    background: color-mix(in oklab, white 82%, transparent);
+  }
 }
 
 @utility brand-gradient-text {
@@ -209,6 +223,8 @@
   width: 100%;
   max-width: 80rem;
   padding-inline: 1.125rem;
+  contain-intrinsic-size: 0 500px;
+  content-visibility: auto;
   @media (min-width: 640px) {
     padding-inline: 1.5rem;
   }
@@ -229,6 +245,10 @@
   backdrop-filter: blur(26px) saturate(160%);
   border: 1px solid color-mix(in oklab, white 78%, var(--brand-soft));
   box-shadow: var(--shadow-glass);
+  @media (max-width: 640px) {
+    backdrop-filter: blur(12px) saturate(130%);
+    background: color-mix(in oklab, white 90%, transparent);
+  }
 }
 
 @utility glass-subtle {
@@ -236,10 +256,14 @@
   backdrop-filter: blur(14px) saturate(140%);
   border: 1px solid color-mix(in oklab, white 60%, var(--brand-soft));
   box-shadow: 0 12px 40px -22px oklch(0.4 0.06 150 / 0.4);
+  @media (max-width: 640px) {
+    backdrop-filter: blur(6px) saturate(110%);
+    background: color-mix(in oklab, white 72%, transparent);
+  }
 }
 
 /* ---------------------------------------------------------------
- * Hover personalities — each surface family gets its own motion
+ * Hover personalities - each surface family gets its own motion
  * signature so nothing feels copy-pasted.
  * --------------------------------------------------------------- */
 
@@ -252,6 +276,12 @@
   &:hover {
     transform: perspective(900px) rotateX(6deg) rotateY(-6deg) translateY(-6px);
     box-shadow: var(--shadow-lift);
+  }
+  @media (max-width: 640px) {
+    transform-style: flat;
+    &:hover {
+      transform: translateY(-4px);
+    }
   }
 }
 
@@ -283,6 +313,14 @@
   &:hover::after {
     transform: translateX(120%);
   }
+  @media (max-width: 640px) {
+    &::after {
+      display: none;
+    }
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
 }
 
 /* Landing cards: slow breathing zoom of the whole surface */
@@ -293,6 +331,11 @@
   &:hover {
     transform: scale(1.025);
     box-shadow: var(--shadow-lift);
+  }
+  @media (max-width: 640px) {
+    &:hover {
+      transform: scale(1.015);
+    }
   }
 }
 
@@ -348,10 +391,10 @@
   }
 }
 
-/* Pillbox–Partybox (festival edition) accents */
+/* Pillbox-Partybox (festival edition) accents */
 :root {
   --party-pink: oklch(0.68 0.26 340);
-  --party-ink: oklch(0.22 0.03 320);
+  --party-ink: oklch(0.75 0.18 35);
 }
 
 @utility party-chip {
