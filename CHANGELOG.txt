@@ -1,0 +1,171 @@
+Pillbox – CHANGELOG
+===================
+
+Version 2.2.0 — 2026-08-10
+--------------------------
+
+Google Sheets Integration
+- Added Google Sheets API integration with service account credentials
+- Two separate Google Sheets for Kiskunfélegyháza and Alsóörs locations
+- Data cached for 15 minutes on server (previously 1 minute)
+- Environment variables for sheet IDs and service account credentials
+- Real-time data synchronization from Google Sheets
+
+Location Updates
+- Updated Kiskunfélegyháza address: Ficsór József u. 1, 6100 (was Bercsényi utca 41.)
+- Footer contact information updated to match new address
+
+Product Display
+- Removed shelf numbering from machine product pages
+- Products now organized by category instead of shelf
+- Category-based layout for better user experience
+
+Branding Updates
+- Replaced all logo instances with new Pillbox logo
+- Map markers now show orange/purple colored version of the logo
+- Removed Lovable references and error reporting integration
+- Cleaned up project metadata and documentation
+
+Technical Improvements
+- Removed Lovable-specific error reporting library
+- Updated package configuration to remove Lovable exclusions
+- Cleaned project documentation (README.md, AGENTS.md)
+- Removed .lovable directory and related files
+
+Version 2.1.0 — 2026-08-09
+--------------------------
+
+Fesztivál automata (Pillbox–Partybox edition)
+- Új automata a térképen: PB-002 "Pillbox–Partybox Alsóörs" (Tábor Fesztivál,
+  2026.08.26–30., 0–24 a fesztivál ideje alatt), 12 termékkel, 3 polcon.
+- A gép sor kapott egy `edition` ("health" | "festival") és egy `period`
+  mezőt, így a jövőbeni táblázat-export is jelölni tudja a fesztiválgépeket.
+- Fekete–rózsaszín Partybox logó jelölő a térképen (src/assets/logo-partybox.png),
+  Partybox chip és rózsaszín keret a gép panelen és a géphez tartozó oldalon.
+- Külön Partybox aloldal egyelőre nem készült.
+
+Landing
+- A PillBox / PillBox Festival választóképernyő megszűnt: a "/" mostantól a
+  /pillbox oldalra irányít, a /festival placeholder oldal törölve, a "Váltás"
+  linkek eltűntek a navigációból és a láblécből.
+
+Térkép
+- Magyarország határa immár a valós (nyilvános GeoJSON-ból egyszerűsített,
+  ~687 pontos) országhatár, helyes szélesség/hosszúság arányban
+  (src/data/hungaryOutline.ts, előre kiszámolt SVG path – nincs futásidejű
+  vetítési költség).
+- Finom, csak transform/opacity alapú jelölő-halo animáció (GPU-barát),
+  hover- és fókuszállapot, prefers-reduced-motion támogatással.
+
+Termékek
+- A kategória-címkék eltűntek a terméklistáról, a termékoldalról és a térkép
+  automata-paneljéről (a mező az adatmodellben megmarad szűréshez).
+
+Teljesítmény / kompatibilitás
+- Nincs új futásidejű függőség; az animációk kizárólag transform és opacity
+  tulajdonságokat mozgatnak, így gyengébb laptopokon és mobilon sem akadnak.
+- Globális prefers-reduced-motion kapcsoló.
+
+
+
+Version 2.0.0 — 2026-08-08
+--------------------------
+
+Vending machine section (walkthrough removed, product list added)
+- Deleted src/components/site/MachineExperience.tsx (virtual walkthrough,
+  shelf hotspots, cinematic zoom viewer and the machine dialog).
+- Deleted the image-based browsing experience and the src/assets/machine.jpg
+  asset together with every reference to it.
+- Removed the machine dialog state and the onViewMachine prop chain from
+  src/routes/pillbox.tsx and src/components/site/MapSection.tsx.
+- Removed the "Élmény" (experience) entry from the navbar and footer menus.
+- Added src/routes/gep.$machineId.tsx: a clean product list page for a machine,
+  grouped by shelf, showing product name, price, short information and stock.
+- Added src/routes/termek.$productId.tsx: dedicated product information page
+  (name, price, short info, full description, package size, distributor,
+  availability per machine). Directly linkable, so it works from QR codes.
+- Added src/components/site/PageHeader.tsx: lightweight logo header shared by
+  the machine and product pages (also the QR landing header).
+- Map machine panel button now reads "Termékek megtekintése" and links to the
+  machine product page instead of opening the walkthrough dialog.
+
+Product information system
+- Added src/data/mockProducts.ts: permanent product catalogue (~sheet rows)
+  with product_id, name, price_huf, category, short_info, description,
+  package_size and manufacturer.
+- Rewrote src/data/types.ts: separated the product catalogue (ProductRow /
+  Product) from machine rows (MachineRow / Machine); machines now reference
+  catalogue products by id with "product_id::shelf::stock" entries, so every
+  machine can have its own shelf layout on top of one shared catalogue.
+- Added formatPrice() and STOCK_LABEL helpers to keep price/stock rendering
+  consistent across pages.
+- Rewrote src/data/machineSource.ts into a single PillboxDataSource seam with
+  fetchProductRows() and fetchMachineRows(); swapping in the Google Sheets /
+  Docs API later requires no UI changes. Added productsQueryOptions.
+- Removed the artificial 250 ms loading delay from the mock data source.
+- Removed the unused photo_url / photo fields and the categories column;
+  machine categories are now derived from its products.
+- src/data/mockMachines.ts reduced to the single active machine
+  (Pillbox Kiskunfélegyháza) with a 15-product, 4-shelf layout.
+
+Branding
+- Pillbox logo shown at the top of every page (landing, main site, machine and
+  product pages); the icon-only mark is used, no motto.
+- Map markers now use the Pillbox logo icon (circular clipped SVG image with a
+  brand-coloured ring) instead of generic green dots.
+
+Map section
+- Section label changed from "Hálózat" to "Térkép".
+- Replaced the gradient/animated stylised map with a normal, professional
+  Hungary outline: more accurate border polygon, neutral land fill, clean
+  brand-coloured stroke, no path-drawing or pulsing animations.
+- Text changed: "Kattints egy zöld jelölőre a részletekért."
+  -> "Kattints egy logóra a részletekért."
+- Text changed: "8 aktív Pillbox pont a térképen. Kattints bármelyikre a
+  részletekért és a virtuális bejáráshoz."
+  -> "1 aktív Pillbox a térképen. Kattints bármelyikre a részletek és
+  termékinformációk megtekintéséhez." (count is rendered dynamically)
+- Removed the machine photo header from the map side panel.
+
+Content sections
+- Rólunk: kept the large heading, replaced the smaller paragraph with the
+  client-provided family-business text; removed the leftover empty paragraph.
+- Küldetésünk: unchanged.
+- Jövőképünk: replaced with the client-provided national network text.
+- Miért minket válassz?: replaced with the client-provided pharmacist
+  background text.
+- Contact: removed the generic contact form, the toast feedback and the
+  Google Maps placeholder block. Now only premium glass cards for e-mail
+  (mailto link), phone (tel link) and company data:
+  RAGAMINI Kft. / ragaminikft@gmail.com / +36 70 403 2633 /
+  6100 Kiskunfélegyháza, Bercsényi utca 41. / Adószám: 32879997-2-03
+- Footer and landing page contact/copyright data updated to RAGAMINI Kft.
+
+Code audit / quality
+- Removed dead code: machine dialog, shelf hotspot data, stock parsing for the
+  old product string format, unused photo resolution helper, unused imports
+  (sonner toast, Input/Textarea/Label usage in Contact, useState in pillbox).
+- Simplified the map SVG (no motion path animation, no per-marker spring
+  animation) which reduces main-thread work and improves animation
+  performance on mobile.
+- Product/machine pages reuse the existing glass design tokens and Reveal
+  animations; no redesign, only consistency.
+- Responsive check: machine product grid is 1 column on phones, 2 on tablets,
+  3 on large desktops; product page switches to a single column below lg;
+  contact cards stack on mobile; all touch targets stay 44px+.
+- SEO: per-route head() metadata added for the machine and product pages;
+  /gep/PB-001 added to sitemap.xml.
+- Dependencies were reviewed; all remaining packages are still referenced by
+  the shadcn/ui component library, so none were removed (removal would break
+  the shared UI primitives).
+
+Version 1.1.0 — earlier
+-----------------------
+- Unique hover animation system (tilt, sheen, swell, ring bloom, drift, pop,
+  underline grow) and zero-config Vercel hosting (vercel.json).
+
+Version 1.0.0 — initial prototype
+---------------------------------
+- Landing selection screen (PillBox / PillBox Festival), main Pillbox site
+  (hero, features, about, map, contact, footer), festival placeholder page,
+  glassmorphism design system and spreadsheet-shaped mock data layer.
