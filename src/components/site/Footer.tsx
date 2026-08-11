@@ -20,7 +20,7 @@ export function Footer() {
               loading="lazy"
               width={40}
               height={40}
-              className="h-9 w-9 rounded-xl"
+              className="h-9 w-9 rounded-xl object-contain"
             />
             <span className="text-lg font-extrabold tracking-tight">Pillbox</span>
           </div>

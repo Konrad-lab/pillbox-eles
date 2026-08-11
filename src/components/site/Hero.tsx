@@ -52,7 +52,7 @@ export function Hero() {
                 alt="Pillbox logó"
                 width={64}
                 height={64}
-                className="h-11 w-11 shrink-0 rounded-xl sm:h-14 sm:w-14 sm:rounded-2xl"
+                className="h-11 w-11 shrink-0 rounded-xl object-contain sm:h-14 sm:w-14 sm:rounded-2xl"
               />
               <span className="min-w-0 text-xs font-medium text-muted-foreground sm:text-sm">
                 Magyarország egészségügyi automata hálózata

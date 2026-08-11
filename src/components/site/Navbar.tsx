@@ -40,7 +40,7 @@ export function Navbar() {
             alt="Pillbox logó"
             width={40}
             height={40}
-            className="h-8 w-8 shrink-0 rounded-lg sm:h-9 sm:w-9 sm:rounded-xl"
+            className="h-8 w-8 shrink-0 rounded-lg object-contain sm:h-9 sm:w-9 sm:rounded-xl"
           />
           <span className="truncate text-base font-extrabold tracking-tight sm:text-lg">
             Pillbox

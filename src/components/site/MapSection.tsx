@@ -130,7 +130,7 @@ export function MapSection() {
                       width={30}
                       height={30}
                       clipPath="url(#pb-marker-clip)"
-                      preserveAspectRatio="xMidYMid slice"
+                      preserveAspectRatio="xMidYMid meet"
                       pointerEvents="none"
                     />
                     <text
