@@ -74,7 +74,7 @@ export function Hero() {
               transition={{ duration: isMobile ? 0.6 : 0.9, delay: isMobile ? 0.11 : 0.22 }}
               className="mt-5 max-w-xl text-[0.95rem] leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg"
             >
-              A Pillbox okos automatái mindennapi egészségügyi termékeket, vitaminokat és szezonális
+              A Pillbox automatái mindennapi egészségügyi termékeket, vitaminokat és szezonális
               készítményeket tesznek elérhetővé az ország legforgalmasabb pontjain - éjjel-nappal,
               sorban állás nélkül.
             </motion.p>
