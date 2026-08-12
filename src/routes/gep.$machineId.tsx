@@ -6,6 +6,7 @@ import { Ambient } from "@/components/site/Ambient";
 import { PageHeader } from "@/components/site/PageHeader";
 import { machinesQueryOptions } from "@/data/machineSource";
 import { formatPrice, STOCK_LABEL, type MachineProduct, type MachineEdition } from "@/data/types";
+import { useProductSync } from "@/hooks/useProductSync";
 
 export const Route = createFileRoute("/gep/$machineId")({
   head: (ctx) => {
@@ -36,6 +37,9 @@ function MachinePage() {
   const { machineId } = Route.useParams();
   const { data: machines, isLoading } = useQuery(machinesQueryOptions);
   const machine = machines?.find((item) => item.id === machineId);
+  
+  // Get multi-sheet products
+  const { products: multiSheetProducts, loading: productsLoading } = useProductSync(15);
 
   // Dynamic favicon based on machine edition
   useEffect(() => {
@@ -49,7 +53,19 @@ function MachinePage() {
 
   if (!isLoading && machines && !machine) throw notFound();
 
-  const categories = [...new Set(machine?.products.map((product) => product.category) ?? [])].sort();
+  // Filter products based on machine location
+  const filteredProducts = multiSheetProducts.filter(product => {
+    if (machine?.city === "Kiskunfélegyháza") {
+      return product.source === "Kiskunfélegyháza";
+    }
+    if (machine?.city === "Alsóörs") {
+      return product.source === "Alsóörs partybox";
+    }
+    return false;
+  });
+
+  // Create a category from product source for grouping
+  const categories = [...new Set(filteredProducts.map((product) => product.source))].sort();
 
   return (
     <main className="relative min-h-[100svh] pb-16 sm:pb-24">
@@ -100,27 +116,33 @@ function MachinePage() {
                 {machine.description}
               </p>
               <p className="mt-4 text-xs text-muted-foreground">
-                {machine.products.length} termék · frissítve: {machine.lastUpdated ?? "-"}
+                {filteredProducts.length} termék · frissítve: {filteredProducts.length > 0 ? "most" : "-"}
               </p>
             </header>
 
             <div className="mt-8 space-y-8 sm:mt-12 sm:space-y-12">
-              {categories.map((category) => (
-                <section key={category}>
-                  <h2 className={`text-[0.65rem] font-semibold tracking-[0.2em] uppercase sm:text-xs ${
-                    machine.edition === "festival" ? "text-foreground" : "text-brand"
-                  }`}>
-                    {category}
-                  </h2>
-                  <ul className="mt-3 grid gap-3 sm:mt-4 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
-                    {machine.products
-                      .filter((product) => product.category === category)
-                      .map((product) => (
-                        <ProductCard key={product.id} product={product} edition={machine.edition} />
-                      ))}
-                  </ul>
-                </section>
-              ))}
+              {productsLoading ? (
+                <p className="text-sm text-muted-foreground">Termékek betöltése...</p>
+              ) : filteredProducts.length === 0 ? (
+                <p className="text-sm text-muted-foreground">Nincs elérhető termék ebben az automatában.</p>
+              ) : (
+                categories.map((category) => (
+                  <section key={category}>
+                    <h2 className={`text-[0.65rem] font-semibold tracking-[0.2em] uppercase sm:text-xs ${
+                      machine.edition === "festival" ? "text-foreground" : "text-brand"
+                    }`}>
+                      {category}
+                    </h2>
+                    <ul className="mt-3 grid gap-3 sm:mt-4 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
+                      {filteredProducts
+                        .filter((product) => product.source === category)
+                        .map((product) => (
+                          <MultiSheetProductCard key={product.id} product={product} edition={machine.edition} />
+                        ))}
+                    </ul>
+                  </section>
+                ))
+              )}
             </div>
           </>
         )}
@@ -174,6 +196,35 @@ function ProductCard({ product, edition }: { product: MachineProduct; edition: M
           </span>
         </div>
       </Link>
+    </li>
+  );
+}
+
+function MultiSheetProductCard({ product, edition }: { product: any; edition: MachineEdition }) {
+  const isParty = edition === "festival";
+  
+  return (
+    <li>
+      <div className={`hover-sheen group flex h-full flex-col rounded-[1.25rem] p-5 sm:rounded-[1.75rem] ${
+        isParty ? "party-surface party-glow party-hover" : "glass-panel"
+      }`}>
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="text-base font-bold tracking-tight sm:text-lg">{product.name}</h3>
+          </div>
+          <span className="shrink-0 rounded-full bg-secondary px-2.5 py-1 text-[0.7rem] font-medium text-secondary-foreground">
+            Készleten
+          </span>
+        </div>
+
+        <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">{product.source}</p>
+
+        <div className="mt-auto flex items-center justify-between gap-3 pt-5">
+          <span className="text-lg font-extrabold tracking-tight">
+            {product.price}
+          </span>
+        </div>
+      </div>
     </li>
   );
 }
