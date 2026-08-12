@@ -56,19 +56,19 @@ function MachinePage() {
   // Filter products based on machine location
   const filteredProducts = multiSheetProducts.filter(product => {
     if (machine?.city === "Kiskunfélegyháza") {
-      return product.source === "Kiskunfélegyháza";
+      return product.source === "Kiskunfélegyháza" || product.source === "Sheet1";
     }
     if (machine?.city === "Alsóörs") {
       return product.source === "Alsóörs partybox";
     }
     if (machine?.city === "Budaörs") {
-      return product.source === "Sheet3" || product.source === "Kiskunfélegyháza"; // fallback to main sheet
+      return product.source === "Sheet3" || product.source === "Budaörs";
     }
     return false;
   });
 
-  // Create a category from product source for grouping
-  const categories = [...new Set(filteredProducts.map((product) => product.source))].sort();
+  // Create categories from product category field for grouping
+  const categories = [...new Set(filteredProducts.map((product) => product.category))].sort();
 
   return (
     <main className="relative min-h-[100svh] pb-16 sm:pb-24">
@@ -138,7 +138,7 @@ function MachinePage() {
                     </h2>
                     <ul className="mt-3 grid gap-3 sm:mt-4 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
                       {filteredProducts
-                        .filter((product) => product.source === category)
+                        .filter((product) => product.category === category)
                         .map((product) => (
                           <MultiSheetProductCard key={product.id} product={product} edition={machine.edition} />
                         ))}
@@ -209,16 +209,16 @@ function MultiSheetProductCard({ product, edition }: { product: any; edition: Ma
   return (
     <li>
       <div className={`hover-sheen group flex h-full flex-col rounded-[1.25rem] p-5 sm:rounded-[1.75rem] ${
-        isParty ? "party-surface party-glow party-hover bg-gradient-to-br from-pink-400 to-purple-500" : "glass-panel"
+        isParty ? "party-surface party-glow party-hover" : "glass-panel"
       }`}>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className={`text-base font-bold tracking-tight sm:text-lg ${isParty ? "text-white" : ""}`}>{product.name}</h3>
+            <h3 className="text-base font-bold tracking-tight sm:text-lg">{product.name}</h3>
           </div>
         </div>
 
         <div className="mt-auto flex items-center justify-between gap-3 pt-5">
-          <span className={`text-lg font-extrabold tracking-tight ${isParty ? "text-white" : ""}`}>
+          <span className="text-lg font-extrabold tracking-tight">
             {product.price}
           </span>
         </div>

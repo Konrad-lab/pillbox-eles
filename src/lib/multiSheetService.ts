@@ -5,6 +5,7 @@ export interface MultiSheetProduct {
   price: string;
   name: string;
   source: string;
+  category: string;
 }
 
 const sheetConfigs = [
@@ -47,6 +48,67 @@ const getAuthClient = () => {
   });
 };
 
+const categorizeProduct = (name: string): string => {
+  const nameLower = name.toLowerCase();
+
+  // Vitaminok és étrend-kiegészítők
+  if (nameLower.includes('vitamin') || nameLower.includes('c-vitamin') || nameLower.includes('d-vitamin') ||
+      nameLower.includes('multivitamin') || nameLower.includes('b-complex') || nameLower.includes('b12') ||
+      nameLower.includes('cink') || nameLower.includes('magnézium') || nameLower.includes('vas') ||
+      nameLower.includes('kalcium') || nameLower.includes('omega') || nameLower.includes('q10') ||
+      nameLower.includes('folsav') || nameLower.includes('szelén') || nameLower.includes('étrend-kiegészítő')) {
+    return 'Vitaminok és étrend-kiegészítők';
+  }
+
+  // Fájdalomcsillapítók és lázcsökkentők
+  if (nameLower.includes('ibuprofen') || nameLower.includes('paracetamol') || nameLower.includes('aspirin') ||
+      nameLower.includes('diclofenac') || nameLower.includes('fájdalom') || nameLower.includes('fejfájás') ||
+      nameLower.includes('izom') || nameLower.includes('reuma') || nameLower.includes('nagyfájás')) {
+    return 'Fájdalomcsillapítók';
+  }
+
+  // Másnaposság elleni termékek
+  if (nameLower.includes('alkohol') || nameLower.includes('másnap') || nameLower.includes('fehérje') ||
+      nameLower.includes('elektrolit') || nameLower.includes('hidratál') || nameLower.includes('energia')) {
+    return 'Másnaposság elleni';
+  }
+
+  // Higiéniai termékek
+  if (nameLower.includes('zsebkendő') || nameLower.includes('maszk') || nameLower.includes(' kéz') ||
+      nameLower.includes('fertőtlen') || nameLower.includes('törölköző') || nameLower.includes('papír') ||
+      nameLower.includes('wc') || nameLower.includes('szappan') || nameLower.includes('higiénia')) {
+    return 'Higiénia';
+  }
+
+  // Napvédelem
+  if (nameLower.includes('nap') || nameLower.includes('uv') || nameLower.includes('fényvédő') ||
+      nameLower.includes('spf') || nameLower.includes('solar')) {
+    return 'Napvédelem';
+  }
+
+  // Gyomorproblémák
+  if (nameLower.includes('gyomor') || nameLower.includes('emésztés') || nameLower.includes('sav') ||
+      nameLower.includes('hasmenés') || nameLower.includes('székrekedés') || nameLower.includes('probiotikum')) {
+    return 'Emésztés';
+  }
+
+  // Allergia
+  if (nameLower.includes('allergia') || nameLower.includes('orrfolyás') || nameLower.includes('tüsszentés') ||
+      nameLower.includes('szem') || nameLower.includes('antihisztamin')) {
+    return 'Allergia';
+  }
+
+  // Megfázás és influenza
+  if (nameLower.includes('megfázás') || nameLower.includes('influenza') || nameLower.includes('köhögés') ||
+      nameLower.includes('torok') || nameLower.includes('orrcsepp') || nameLower.includes('orrspray') ||
+      nameLower.includes('csep') || nameLower.includes('gyógynövény')) {
+    return 'Megfázás és influenza';
+  }
+
+  // Egyéb
+  return 'Egyéb';
+};
+
 export const fetchProductsFromSheets = async (): Promise<MultiSheetProduct[]> => {
   const auth = getAuthClient();
   const sheets = google.sheets({ version: 'v4', auth });
@@ -87,6 +149,7 @@ export const fetchProductsFromSheets = async (): Promise<MultiSheetProduct[]> =>
             price: priceVal,
             name: nameVal,
             source: result.config.name,
+            category: categorizeProduct(nameVal),
           });
         }
       }

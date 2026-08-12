@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { CalendarDays, Clock, MapPin, PackageSearch, X } from "lucide-react";
+import { CalendarDays, Clock, MapPin, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
@@ -229,11 +229,6 @@ function MachinePanel({ machine, onClose }: { machine: Machine; onClose: () => v
         </p>
 
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{machine.description}</p>
-
-        <p className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
-          <PackageSearch className={`h-4 w-4 text-brand`} />
-          {machine.products.length} termék · frissítve: {machine.lastUpdated ?? "-"}
-        </p>
 
         <Button 
           asChild 
