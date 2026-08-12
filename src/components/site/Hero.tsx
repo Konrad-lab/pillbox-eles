@@ -47,13 +47,14 @@ export function Hero() {
               transition={{ duration: isMobile ? 0.5 : 0.8, delay: isMobile ? 0.04 : 0.08, ease: [0.22, 1, 0.36, 1] }}
               className="mt-6 flex items-center gap-3 sm:mt-7 sm:gap-4"
             >
-              <img
-                src={logo}
-                alt="Pillbox logó"
-                width={64}
-                height={64}
-                className="h-11 w-11 shrink-0 rounded-xl object-contain sm:h-14 sm:w-14 sm:rounded-2xl"
-              />
+            {/* <img
+               src={logo}
+               alt="Pillbox logó"
+               width={64}
+               height={64}
+               className="h-11 w-11 shrink-0 rounded-xl object-contain sm:h-14 sm:w-14 sm:rounded-2xl"
+            /> */}
+
               <span className="min-w-0 text-xs font-medium text-muted-foreground sm:text-sm">
                 Magyarország egészségügyi automata hálózata
               </span>
