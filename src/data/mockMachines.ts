@@ -9,7 +9,7 @@ export const MOCK_MACHINE_ROWS: MachineRow[] = [
   {
     machine_id: "PB-001",
     name: "Pillbox - Kiskunfélegyháza, Ficsór József utca",
-    address: "Ficsór József u. 1, 6100 Kiskunfélegyháza",
+    address: "Ficsór József u. 1, 6100 ",
     city: "Kiskunfélegyháza",
     latitude: 46.7108,
     longitude: 19.8524,
@@ -34,8 +34,8 @@ export const MOCK_MACHINE_ROWS: MachineRow[] = [
   {
     machine_id: "PB-003",
     name: "Pillbox - Budaörs, Hollósy Cukrászat",
-    address: "Ibolya u. 1, 2040 Budaörs",
-    city: "Alsóörs",
+    address: "Ibolya u. 1, 2040 ",
+    city: "Budaörs",
     latitude: 47.46022581,
     longitude: 18.9271368,
     availability: "0-24 a fesztivál ideje alatt",
