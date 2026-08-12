@@ -55,8 +55,9 @@ function MachinePage() {
 
   // Filter products based on machine location
   const filteredProducts = multiSheetProducts.filter(product => {
+    console.log('Filtering product:', product.name, 'source:', product.source, 'machine city:', machine?.city);
     if (machine?.city === "Kiskunfélegyháza") {
-      return product.source === "Kiskunfélegyháza" || product.source === "Sheet1";
+      return product.source === "Kiskunfélegyháza" || product.source === "Sheet1" || product.source === "Sheet3";
     }
     if (machine?.city === "Alsóörs") {
       return product.source === "Alsóörs partybox";

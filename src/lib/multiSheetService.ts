@@ -144,13 +144,15 @@ export const fetchProductsFromSheets = async (): Promise<MultiSheetProduct[]> =>
         const nameVal = row[result.config.nameColumn] ? String(row[result.config.nameColumn]).trim() : '';
 
         if (nameVal) {
-          products.push({
+          const product = {
             id: `${result.config.name}-${idVal}`,
             price: priceVal,
             name: nameVal,
             source: result.config.name,
             category: categorizeProduct(nameVal),
-          });
+          };
+          console.log('Adding product:', product);
+          products.push(product);
         }
       }
     }
