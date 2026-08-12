@@ -39,7 +39,7 @@ function MachinePage() {
   const machine = machines?.find((item) => item.id === machineId);
   
   // Get multi-sheet products
-  const { products: multiSheetProducts, loading: productsLoading } = useProductSync(15);
+  const { products: multiSheetProducts, loading: productsLoading, lastSync } = useProductSync(15);
 
   // Dynamic favicon based on machine edition
   useEffect(() => {
@@ -60,6 +60,9 @@ function MachinePage() {
     }
     if (machine?.city === "Alsóörs") {
       return product.source === "Alsóörs partybox";
+    }
+    if (machine?.city === "Budaörs") {
+      return product.source === "Sheet3" || product.source === "Kiskunfélegyháza"; // fallback to main sheet
     }
     return false;
   });
@@ -116,7 +119,7 @@ function MachinePage() {
                 {machine.description}
               </p>
               <p className="mt-4 text-xs text-muted-foreground">
-                {filteredProducts.length} termék · frissítve: {filteredProducts.length > 0 ? "most" : "-"}
+                {!productsLoading ? `${filteredProducts.length} termék · frissítve: ${lastSync ? new Date(lastSync).toLocaleTimeString('hu-HU') : '-'}` : "Termékek betöltése..."}
               </p>
             </header>
 
@@ -202,25 +205,20 @@ function ProductCard({ product, edition }: { product: MachineProduct; edition: M
 
 function MultiSheetProductCard({ product, edition }: { product: any; edition: MachineEdition }) {
   const isParty = edition === "festival";
-  
+
   return (
     <li>
       <div className={`hover-sheen group flex h-full flex-col rounded-[1.25rem] p-5 sm:rounded-[1.75rem] ${
-        isParty ? "party-surface party-glow party-hover" : "glass-panel"
+        isParty ? "party-surface party-glow party-hover bg-gradient-to-br from-pink-400 to-purple-500" : "glass-panel"
       }`}>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="text-base font-bold tracking-tight sm:text-lg">{product.name}</h3>
+            <h3 className={`text-base font-bold tracking-tight sm:text-lg ${isParty ? "text-white" : ""}`}>{product.name}</h3>
           </div>
-          <span className="shrink-0 rounded-full bg-secondary px-2.5 py-1 text-[0.7rem] font-medium text-secondary-foreground">
-            Készleten
-          </span>
         </div>
 
-        <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">{product.source}</p>
-
         <div className="mt-auto flex items-center justify-between gap-3 pt-5">
-          <span className="text-lg font-extrabold tracking-tight">
+          <span className={`text-lg font-extrabold tracking-tight ${isParty ? "text-white" : ""}`}>
             {product.price}
           </span>
         </div>
