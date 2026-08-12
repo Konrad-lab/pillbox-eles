@@ -437,6 +437,38 @@
   }
 }
 
+/* Pillbox health edition accents (green) */
+@utility brand-surface {
+  background: color-mix(in oklab, white 68%, transparent);
+  backdrop-filter: blur(18px) saturate(150%);
+  border: 1px solid color-mix(in oklab, white 70%, var(--brand));
+  box-shadow: var(--shadow-glass);
+  @media (max-width: 640px) {
+    backdrop-filter: blur(8px) saturate(120%);
+    background: color-mix(in oklab, white 82%, transparent);
+  }
+}
+
+@keyframes brand-glow {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.15);
+  }
+}
+
+@utility brand-glow {
+  animation: brand-glow 3s ease-in-out infinite;
+}
+
+@utility brand-hover {
+  &:hover {
+    border-color: var(--brand);
+    box-shadow: 0 0 20px color-mix(in oklab, var(--brand) 30%, transparent);
+  }
+}
+
 /* GPU-cheap marker halo: transform + opacity only */
 .map-marker-halo {
   transform-origin: center;

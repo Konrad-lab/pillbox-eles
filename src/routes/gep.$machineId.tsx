@@ -209,7 +209,7 @@ function MultiSheetProductCard({ product, edition }: { product: any; edition: Ma
   return (
     <li>
       <div className={`hover-sheen group flex h-full flex-col rounded-[1.25rem] p-5 sm:rounded-[1.75rem] ${
-        isParty ? "party-surface party-glow party-hover" : "glass-panel border border-brand/30"
+        isParty ? "party-surface party-glow party-hover" : "brand-surface brand-glow brand-hover"
       }`}>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
