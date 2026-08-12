@@ -55,7 +55,6 @@ function MachinePage() {
 
   // Filter products based on machine location
   const filteredProducts = multiSheetProducts.filter(product => {
-    console.log('Filtering product:', product.name, 'source:', product.source, 'machine city:', machine?.city);
     if (machine?.city === "Kiskunfélegyháza") {
       return product.source === "Kiskunfélegyháza" || product.source === "Sheet1" || product.source === "Sheet3";
     }
@@ -210,7 +209,7 @@ function MultiSheetProductCard({ product, edition }: { product: any; edition: Ma
   return (
     <li>
       <div className={`hover-sheen group flex h-full flex-col rounded-[1.25rem] p-5 sm:rounded-[1.75rem] ${
-        isParty ? "party-surface party-glow party-hover" : "glass-panel"
+        isParty ? "party-surface party-glow party-hover" : "glass-panel border border-brand/30"
       }`}>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
