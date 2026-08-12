@@ -1,6 +1,14 @@
 Pillbox - CHANGELOG
 ===================
 
+Version 2.3.0 - 2026-08-12
+--------------------------
+
+New machine location added: Budaörs, Ibolya utca 1. Hollósy Cukrászat, Budaörs 2040
+Visual changes on the map: Alsóörs Táborfesztival's logo background removed
+All of the products got deleted from the code. (Hardcoded ones)
+Logo update
+
 Version 2.2.0 - 2026-08-10
 --------------------------
 
