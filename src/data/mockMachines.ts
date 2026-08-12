@@ -38,7 +38,7 @@ export const MOCK_MACHINE_ROWS: MachineRow[] = [
     city: "Budaörs",
     latitude: 47.46022581,
     longitude: 18.9271368,
-    availability: "0-24 a fesztivál ideje alatt",
+    availability: "0-24",
     edition: "health",
   },
 ];
