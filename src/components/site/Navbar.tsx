@@ -34,7 +34,12 @@ export function Navbar() {
           scrolled || open ? "glass-strong" : "border border-transparent"
         }`}
       >
-        <a href="#top" className="flex min-w-0 items-center gap-2.5">
+        <button
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className="flex min-w-0 items-center gap-2.5"
+        >
         <img
           src={logo}
           alt="Pillbox logó"
@@ -45,7 +50,7 @@ export function Navbar() {
           <span className="truncate text-base font-extrabold tracking-tight sm:text-lg">
             Pillbox
           </span>
-        </a>
+        </button>
 
         <div className="ml-auto hidden items-center gap-1 lg:flex">
           {LINKS.map((link) => (
