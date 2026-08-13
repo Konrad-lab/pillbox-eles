@@ -6,9 +6,9 @@ import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 
 const LINKS = [
-  { label: "Rólunk", href: "#about" },
-  { label: "Térkép", href: "#map" },
-  { label: "Kapcsolat", href: "#contact" },
+  { label: "Rólunk", id: "about" },
+  { label: "Térkép", id: "map" },
+  { label: "Kapcsolat", id: "contact" },
 ];
 
 export function Navbar() {
@@ -49,13 +49,18 @@ export function Navbar() {
 
         <div className="ml-auto hidden items-center gap-1 lg:flex">
           {LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
+            <button
+              key={link.id}
+              onClick={() => {
+                const element = document.getElementById(link.id);
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
               className="hover-underline-grow rounded-full px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
             >
               {link.label}
-            </a>
+            </button>
           ))}
         </div>
 
@@ -80,14 +85,19 @@ export function Navbar() {
           >
             <div className="glass-strong flex flex-col gap-1 rounded-3xl p-3">
               {LINKS.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setOpen(false)}
+                <button
+                  key={link.id}
+                  onClick={() => {
+                    const element = document.getElementById(link.id);
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    setOpen(false);
+                  }}
                   className="rounded-2xl px-4 py-3.5 text-sm font-medium transition-colors active:bg-white/60"
                 >
                   {link.label}
-                </a>
+                </button>
               ))}
             </div>
           </motion.div>

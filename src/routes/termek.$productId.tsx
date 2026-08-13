@@ -51,7 +51,7 @@ function ProductPage() {
 
       <div className="section-shell pt-24 sm:pt-32">
         <Link
-          to="/pillbox"
+          to="/"
           hash="map"
           className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
         >

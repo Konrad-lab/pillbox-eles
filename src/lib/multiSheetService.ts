@@ -6,6 +6,7 @@ export interface MultiSheetProduct {
   name: string;
   source: string;
   category: string;
+  shelf: string;
 }
 
 const sheetConfigs = [
@@ -46,6 +47,33 @@ const getAuthClient = () => {
     credentials,
     scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
   });
+};
+
+const parseShelfFromId = (id: string): string => {
+  // ID format: A10, A11, B10, B11, etc. (normál gépeknél)
+  // OR 10, 11, 12, etc. (partybox-nál)
+  if (!id) return 'A';
+
+  // Ha az ID csak szám (pl. "10", "11"), akkor partybox - osztály szerint
+  if (/^\d+$/.test(id)) {
+    const num = parseInt(id, 10);
+    if (num <= 10) return 'A';
+    if (num <= 20) return 'B';
+    if (num <= 30) return 'C';
+    if (num <= 40) return 'D';
+    if (num <= 50) return 'E';
+    return 'F';
+  }
+
+  // Ha az ID betűvel kezdődik (pl. "A10", "B11")
+  if (id.length >= 2) {
+    const firstChar = id.charAt(0).toUpperCase();
+    if (['A', 'B', 'C', 'D', 'E', 'F'].includes(firstChar)) {
+      return firstChar;
+    }
+  }
+
+  return 'A';
 };
 
 const categorizeProduct = (name: string): string => {
@@ -150,6 +178,7 @@ export const fetchProductsFromSheets = async (): Promise<MultiSheetProduct[]> =>
             name: nameVal,
             source: result.config.name,
             category: categorizeProduct(nameVal),
+            shelf: parseShelfFromId(idVal),
           });
         }
       }

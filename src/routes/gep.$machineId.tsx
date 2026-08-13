@@ -67,8 +67,11 @@ function MachinePage() {
     return false;
   });
 
-  // Create categories from product category field for grouping
-  const categories = [...new Set(filteredProducts.map((product) => product.category))].sort();
+  // Create shelves from product shelf field for grouping (A, B, C, D, E, F order)
+  const shelfOrder = ['A', 'B', 'C', 'D', 'E', 'F'];
+  const shelves = [...new Set(filteredProducts.map((product) => product.shelf))].sort((a, b) => {
+    return shelfOrder.indexOf(a) - shelfOrder.indexOf(b);
+  });
 
   return (
     <main className="relative min-h-[100svh] pb-16 sm:pb-24">
@@ -77,7 +80,7 @@ function MachinePage() {
 
       <div className="section-shell pt-24 sm:pt-32">
         <Link
-          to="/pillbox"
+          to="/"
           hash="map"
           className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
         >
@@ -129,16 +132,17 @@ function MachinePage() {
               ) : filteredProducts.length === 0 ? (
                 <p className="text-sm text-muted-foreground">Nincs elérhető termék ebben az automatában.</p>
               ) : (
-                categories.map((category) => (
-                  <section key={category}>
+                shelves.map((shelf) => (
+                  <section key={shelf}>
                     <h2 className={`text-[0.65rem] font-semibold tracking-[0.2em] uppercase sm:text-xs ${
                       machine.edition === "festival" ? "text-foreground" : "text-brand"
                     }`}>
-                      {category}
+                      {shelf}. polc
                     </h2>
                     <ul className="mt-3 grid gap-3 sm:mt-4 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
                       {filteredProducts
-                        .filter((product) => product.category === category)
+                        .filter((product) => product.shelf === shelf)
+                        .sort((a, b) => a.id.localeCompare(b.id))
                         .map((product) => (
                           <MultiSheetProductCard key={product.id} product={product} edition={machine.edition} />
                         ))}
