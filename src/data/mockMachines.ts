@@ -1,10 +1,5 @@
 import type { MachineRow } from "./types";
 
-/**
- * Machine rows shaped exactly like the future spreadsheet export.
- * Each machine references catalogue products by id, so different machines
- * can carry different shelf layouts from the same product database.
- */
 export const MOCK_MACHINE_ROWS: MachineRow[] = [
   {
     machine_id: "PB-001",
