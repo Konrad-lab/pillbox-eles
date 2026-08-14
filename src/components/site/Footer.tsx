@@ -2,7 +2,6 @@ import { Facebook, Instagram } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import logo from "@/assets/logo.png";
 
-// Saját TikTok SVG ikon komponens
 const TikTokIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
   <svg
     className={className}
