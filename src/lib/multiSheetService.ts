@@ -1,4 +1,4 @@
-import { google } from 'googleapis';
+import { google } from "googleapis";
 
 export interface MultiSheetProduct {
   id: string;
@@ -11,25 +11,31 @@ export interface MultiSheetProduct {
 
 const sheetConfigs = [
   {
-    name: 'Kiskunfélegyháza',
+    // 1. Google Sheet -> 1. automata
+    machineId: "PB-001",
+    name: "Kiskunfélegyháza",
     sheetId: process.env.SHEET_ID_1,
-    range: 'A2:C90',
+    range: "A2:C90",
     idColumn: 0,
     priceColumn: 1,
     nameColumn: 2,
   },
   {
-    name: 'Alsóörs partybox',
+    // 2. Google Sheet -> 2. automata
+    machineId: "PB-002",
+    name: "Alsóörs partybox",
     sheetId: process.env.SHEET_ID_2,
-    range: 'A11:C80',
+    range: "A11:C80",
     idColumn: 0,
     priceColumn: 1,
     nameColumn: 2,
   },
   {
-    name: 'Sheet3',
+    // 3. Google Sheet -> 3. automata
+    machineId: "PB-003",
+    name: "Budaörs",
     sheetId: process.env.SHEET_ID_3,
-    range: 'A2:C90',
+    range: "A2:C90",
     idColumn: 0,
     priceColumn: 1,
     nameColumn: 2,
@@ -40,22 +46,21 @@ const getAuthClient = () => {
   const credentialsRaw = process.env.GOOGLE_CREDENTIALS;
 
   if (!credentialsRaw) {
-    throw new Error('GOOGLE_CREDENTIALS környezeti változó hiányzik.');
+    throw new Error("GOOGLE_CREDENTIALS környezeti változó hiányzik.");
   }
 
   const credentials = JSON.parse(credentialsRaw);
 
   return new google.auth.GoogleAuth({
     credentials,
-    scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+    scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
   });
 };
 
 /**
- * Converts the first column from the Google Sheet into a physical
- * frontend position.
+ * Az első oszlopból meghatározza a fizikai pozíciót.
  *
- * Supported formats:
+ * Elfogadott:
  *   10
  *   11
  *   12
@@ -63,21 +68,25 @@ const getAuthClient = () => {
  *   A11
  *   A12
  *
- * Position 10 is ALWAYS the first frontend position.
- *
- * Returns null for "dupla" or invalid positions.
+ * 10 = első hely
+ * 11 = második hely
+ * ...
+ * 69 = hatvanadik hely
  */
 const parsePositionFromId = (id: string): number | null => {
-  const value = String(id ?? '').trim();
+  const value = String(id ?? "").trim();
 
   if (!value) {
     return null;
   }
 
-  if (value.toLowerCase() === 'dupla') {
+  // A "dupla" nem termék.
+  if (value.toLowerCase() === "dupla") {
     return null;
   }
 
+  // Kikeressük a számot.
+  // Így működik a 10 és az A10 formátum is.
   const match = value.match(/\d+/);
 
   if (!match) {
@@ -86,7 +95,7 @@ const parsePositionFromId = (id: string): number | null => {
 
   const position = Number(match[0]);
 
-  // 10-69 = 60 frontend positions (10 rows × 6 columns)
+  // 10-69 = 60 fizikai hely
   if (position < 10 || position > 69) {
     return null;
   }
@@ -94,127 +103,128 @@ const parsePositionFromId = (id: string): number | null => {
   return position;
 };
 
+/**
+ * A category mezőt meghagyjuk a régi adatszerkezet miatt,
+ * de a polcelrendezéshez egyáltalán nem használjuk.
+ */
 const categorizeProduct = (name: string): string => {
   const nameLower = name.toLowerCase();
 
-  // Vitaminok és étrend-kiegészítők
   if (
-    nameLower.includes('vitamin') ||
-    nameLower.includes('c-vitamin') ||
-    nameLower.includes('d-vitamin') ||
-    nameLower.includes('multivitamin') ||
-    nameLower.includes('b-complex') ||
-    nameLower.includes('b12') ||
-    nameLower.includes('cink') ||
-    nameLower.includes('magnézium') ||
-    nameLower.includes('vas') ||
-    nameLower.includes('kalcium') ||
-    nameLower.includes('omega') ||
-    nameLower.includes('q10') ||
-    nameLower.includes('folsav') ||
-    nameLower.includes('szelén') ||
-    nameLower.includes('étrend-kiegészítő')
+    nameLower.includes("vitamin") ||
+    nameLower.includes("c-vitamin") ||
+    nameLower.includes("d-vitamin") ||
+    nameLower.includes("multivitamin") ||
+    nameLower.includes("b-complex") ||
+    nameLower.includes("b12") ||
+    nameLower.includes("cink") ||
+    nameLower.includes("magnézium") ||
+    nameLower.includes("vas") ||
+    nameLower.includes("kalcium") ||
+    nameLower.includes("omega") ||
+    nameLower.includes("q10") ||
+    nameLower.includes("folsav") ||
+    nameLower.includes("szelén") ||
+    nameLower.includes("étrend-kiegészítő")
   ) {
-    return 'Vitaminok és étrend-kiegészítők';
+    return "Vitaminok és étrend-kiegészítők";
   }
 
-  // Fájdalomcsillapítók és lázcsökkentők
   if (
-    nameLower.includes('ibuprofen') ||
-    nameLower.includes('paracetamol') ||
-    nameLower.includes('aspirin') ||
-    nameLower.includes('diclofenac') ||
-    nameLower.includes('fájdalom') ||
-    nameLower.includes('fejfájás') ||
-    nameLower.includes('izom') ||
-    nameLower.includes('reuma') ||
-    nameLower.includes('nagyfájás')
+    nameLower.includes("ibuprofen") ||
+    nameLower.includes("paracetamol") ||
+    nameLower.includes("aspirin") ||
+    nameLower.includes("diclofenac") ||
+    nameLower.includes("fájdalom") ||
+    nameLower.includes("fejfájás") ||
+    nameLower.includes("izom") ||
+    nameLower.includes("reuma") ||
+    nameLower.includes("nagyfájás")
   ) {
-    return 'Fájdalomcsillapítók';
+    return "Fájdalomcsillapítók";
   }
 
-  // Másnaposság elleni termékek
   if (
-    nameLower.includes('alkohol') ||
-    nameLower.includes('másnap') ||
-    nameLower.includes('fehérje') ||
-    nameLower.includes('elektrolit') ||
-    nameLower.includes('hidratál') ||
-    nameLower.includes('energia')
+    nameLower.includes("alkohol") ||
+    nameLower.includes("másnap") ||
+    nameLower.includes("fehérje") ||
+    nameLower.includes("elektrolit") ||
+    nameLower.includes("hidratál") ||
+    nameLower.includes("energia")
   ) {
-    return 'Másnaposság elleni';
+    return "Másnaposság elleni";
   }
 
-  // Higiéniai termékek
   if (
-    nameLower.includes('zsebkendő') ||
-    nameLower.includes('maszk') ||
-    nameLower.includes(' kéz') ||
-    nameLower.includes('fertőtlen') ||
-    nameLower.includes('törölköző') ||
-    nameLower.includes('papír') ||
-    nameLower.includes('wc') ||
-    nameLower.includes('szappan') ||
-    nameLower.includes('higiénia')
+    nameLower.includes("zsebkendő") ||
+    nameLower.includes("maszk") ||
+    nameLower.includes(" kéz") ||
+    nameLower.includes("fertőtlen") ||
+    nameLower.includes("törölköző") ||
+    nameLower.includes("papír") ||
+    nameLower.includes("wc") ||
+    nameLower.includes("szappan") ||
+    nameLower.includes("higiénia")
   ) {
-    return 'Higiénia';
+    return "Higiénia";
   }
 
-  // Napvédelem
   if (
-    nameLower.includes('nap') ||
-    nameLower.includes('uv') ||
-    nameLower.includes('fényvédő') ||
-    nameLower.includes('spf') ||
-    nameLower.includes('solar')
+    nameLower.includes("nap") ||
+    nameLower.includes("uv") ||
+    nameLower.includes("fényvédő") ||
+    nameLower.includes("spf") ||
+    nameLower.includes("solar")
   ) {
-    return 'Napvédelem';
+    return "Napvédelem";
   }
 
-  // Gyomorproblémák
   if (
-    nameLower.includes('gyomor') ||
-    nameLower.includes('emésztés') ||
-    nameLower.includes('sav') ||
-    nameLower.includes('hasmenés') ||
-    nameLower.includes('székrekedés') ||
-    nameLower.includes('probiotikum')
+    nameLower.includes("gyomor") ||
+    nameLower.includes("emésztés") ||
+    nameLower.includes("sav") ||
+    nameLower.includes("hasmenés") ||
+    nameLower.includes("székrekedés") ||
+    nameLower.includes("probiotikum")
   ) {
-    return 'Emésztés';
+    return "Emésztés";
   }
 
-  // Allergia
   if (
-    nameLower.includes('allergia') ||
-    nameLower.includes('orrfolyás') ||
-    nameLower.includes('tüsszentés') ||
-    nameLower.includes('szem') ||
-    nameLower.includes('antihisztamin')
+    nameLower.includes("allergia") ||
+    nameLower.includes("orrfolyás") ||
+    nameLower.includes("tüsszentés") ||
+    nameLower.includes("szem") ||
+    nameLower.includes("antihisztamin")
   ) {
-    return 'Allergia';
+    return "Allergia";
   }
 
-  // Megfázás és influenza
   if (
-    nameLower.includes('megfázás') ||
-    nameLower.includes('influenza') ||
-    nameLower.includes('köhögés') ||
-    nameLower.includes('torok') ||
-    nameLower.includes('orrcsepp') ||
-    nameLower.includes('orrspray') ||
-    nameLower.includes('csep') ||
-    nameLower.includes('gyógynövény')
+    nameLower.includes("megfázás") ||
+    nameLower.includes("influenza") ||
+    nameLower.includes("köhögés") ||
+    nameLower.includes("torok") ||
+    nameLower.includes("orrcsepp") ||
+    nameLower.includes("orrspray") ||
+    nameLower.includes("csep") ||
+    nameLower.includes("gyógynövény")
   ) {
-    return 'Megfázás és influenza';
+    return "Megfázás és influenza";
   }
 
-  // Egyéb
-  return 'Egyéb';
+  return "Egyéb";
 };
 
-export const fetchProductsFromSheets = async (): Promise<MultiSheetProduct[]> => {
+export const fetchProductsFromSheets = async (): Promise<
+  MultiSheetProduct[]
+> => {
   const auth = getAuthClient();
-  const sheets = google.sheets({ version: 'v4', auth });
+
+  const sheets = google.sheets({
+    version: "v4",
+    auth,
+  });
 
   const products: MultiSheetProduct[] = [];
 
@@ -224,7 +234,7 @@ export const fetchProductsFromSheets = async (): Promise<MultiSheetProduct[]> =>
         return {
           config,
           rows: [],
-          error: 'Hiányzó Sheet ID',
+          error: "Hiányzó Sheet ID",
         };
       }
 
@@ -242,7 +252,7 @@ export const fetchProductsFromSheets = async (): Promise<MultiSheetProduct[]> =>
         return {
           config,
           rows: [],
-          error: error.message,
+          error: error?.message || "Ismeretlen Google Sheets hiba",
         };
       }
     })
@@ -254,6 +264,7 @@ export const fetchProductsFromSheets = async (): Promise<MultiSheetProduct[]> =>
         `Hiba a(z) ${result.config.name} sheetnél:`,
         result.error
       );
+
       continue;
     }
 
@@ -264,19 +275,19 @@ export const fetchProductsFromSheets = async (): Promise<MultiSheetProduct[]> =>
 
       const idVal = row[result.config.idColumn]
         ? String(row[result.config.idColumn]).trim()
-        : '';
+        : "";
 
       const priceVal = row[result.config.priceColumn]
         ? String(row[result.config.priceColumn]).trim()
-        : '';
+        : "";
 
       const nameVal = row[result.config.nameColumn]
         ? String(row[result.config.nameColumn]).trim()
-        : '';
+        : "";
 
-      // "dupla" means that this physical position is intentionally empty.
-      // It must NOT become a product.
-      if (!idVal || idVal.toLowerCase() === 'dupla' || !nameVal) {
+      // "dupla" = üres hely.
+      // Nem jelenítjük meg termékként.
+      if (!idVal || idVal.toLowerCase() === "dupla" || !nameVal) {
         continue;
       }
 
@@ -287,15 +298,29 @@ export const fetchProductsFromSheets = async (): Promise<MultiSheetProduct[]> =>
       }
 
       products.push({
-        id: `${result.config.name}-${idVal}`,
+        id: `${result.config.machineId}-${idVal}`,
         price: priceVal,
         name: nameVal,
+
+        // A source mostantól stabilan a helyszínt jelenti.
         source: result.config.name,
+
         category: categorizeProduct(nameVal),
+
         position,
       });
     }
   }
+
+  // Biztonsági sorrendezés:
+  // minden automata saját termékei 10 -> 69 sorrendben.
+  products.sort((a, b) => {
+    if (a.source !== b.source) {
+      return a.source.localeCompare(b.source, "hu");
+    }
+
+    return a.position - b.position;
+  });
 
   return products;
 };
