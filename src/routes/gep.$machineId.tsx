@@ -100,21 +100,17 @@ function MachinePage() {
     filteredProducts
       .filter(
         (product) =>
-          product.position >= FIRST_POSITION &&
-          product.position <= LAST_POSITION,
+          product.position >= FIRST_POSITION && product.position <= LAST_POSITION,
       )
       .map((product) => [product.position, product]),
   );
-  const lastFilledPosition = productsByPosition.size
-    ? Math.max(...productsByPosition.keys())
-    : FIRST_POSITION;
-  const shelfCount =
-    Math.floor((lastFilledPosition - FIRST_POSITION) / SHELF_SIZE) + 1;
-  const shelves = Array.from({ length: shelfCount }, (_, shelfIndex) =>
+  const shelves = Array.from({ length: SHELF_COUNT }, (_, shelfIndex) =>
     Array.from(
       { length: SHELF_SIZE },
       (_, slotIndex) => FIRST_POSITION + shelfIndex * SHELF_SIZE + slotIndex,
     ),
+  ).filter((positions) =>
+    positions.some((position) => productsByPosition.has(position)),
   );
 
   return (
@@ -244,7 +240,7 @@ function MachinePage() {
                     {shelves.map((positions) => (
                       <ul
                         key={`shelf-${positions[0]}`}
-                        className="grid grid-cols-6 gap-2 sm:gap-4"
+                        className="grid grid-cols-6 gap-1.5 sm:gap-4"
                       >
                         {positions.map((position) => {
                           const product = productsByPosition.get(position);
@@ -254,7 +250,7 @@ function MachinePage() {
                               <li
                                 key={`empty-${position}`}
                                 aria-hidden="true"
-                                className="min-h-[100px] sm:min-h-[140px]"
+                                className="min-w-0"
                               />
                             );
                           }
@@ -367,24 +363,24 @@ function MultiSheetProductCard({
   const isParty = edition === "festival";
 
   return (
-    <li>
+    <li className="min-w-0">
       <div
-        className={`hover-sheen group flex h-full flex-col rounded-[1rem] p-2.5 sm:rounded-[1.75rem] sm:p-5 ${
+        className={`hover-sheen group flex h-full flex-col rounded-[1rem] p-1.5 sm:rounded-[1.75rem] sm:p-5 ${
           isParty
             ? "party-surface party-glow party-hover"
             : "brand-surface brand-glow brand-hover"
         }`}
       >
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-1.5 sm:gap-3">
           <div className="min-w-0">
-            <h3 className="text-[0.7rem] leading-snug font-bold tracking-tight sm:text-lg">
+            <h3 className="hyphens-auto text-[0.6rem] leading-tight font-bold tracking-tight break-words sm:text-lg sm:leading-snug">
               {product.name}
             </h3>
           </div>
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-3 pt-3 sm:pt-5">
-          <span className="text-xs font-extrabold tracking-tight sm:text-lg">
+        <div className="mt-auto flex items-center justify-between gap-3 pt-2 sm:pt-5">
+          <span className="text-[0.6rem] font-extrabold tracking-tight break-words sm:text-lg">
             {product.price}
           </span>
         </div>
