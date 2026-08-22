@@ -18,6 +18,11 @@ import {
 
 import { useProductSync } from "@/hooks/useProductSync";
 
+const FIRST_POSITION = 10;
+const SHELF_SIZE = 6;
+const SHELF_COUNT = 10;
+const LAST_POSITION = FIRST_POSITION + SHELF_SIZE * SHELF_COUNT - 1;
+
 export const Route = createFileRoute("/gep/$machineId")({
   head: (ctx) => {
     const { machineId } = ctx.params;
@@ -89,17 +94,27 @@ function MachinePage() {
     return false;
   });
 
-  // The machine has 60 physical slots, numbered 10-69 in the sheet.
+  // 10 shelves of 6 slots, numbered 10-69 in the sheet: 10-15 is the top
+  // shelf left to right, 16-21 the next one down, and so on.
   const productsByPosition = new Map(
-    filteredProducts.map((product) => [product.position, product]),
+    filteredProducts
+      .filter(
+        (product) =>
+          product.position >= FIRST_POSITION &&
+          product.position <= LAST_POSITION,
+      )
+      .map((product) => [product.position, product]),
   );
-  const firstPosition = 10;
-  const lastPosition = filteredProducts.length
-    ? Math.max(...filteredProducts.map((product) => product.position))
-    : firstPosition;
-  const gridPositions = Array.from(
-    { length: lastPosition - firstPosition + 1 },
-    (_, index) => firstPosition + index,
+  const lastFilledPosition = productsByPosition.size
+    ? Math.max(...productsByPosition.keys())
+    : FIRST_POSITION;
+  const shelfCount =
+    Math.floor((lastFilledPosition - FIRST_POSITION) / SHELF_SIZE) + 1;
+  const shelves = Array.from({ length: shelfCount }, (_, shelfIndex) =>
+    Array.from(
+      { length: SHELF_SIZE },
+      (_, slotIndex) => FIRST_POSITION + shelfIndex * SHELF_SIZE + slotIndex,
+    ),
   );
 
   return (
@@ -225,29 +240,36 @@ function MachinePage() {
                     Termékek
                   </h2>
 
-                  <ul className="mt-3 grid grid-cols-2 gap-3 sm:mt-4 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
-                    {gridPositions.map((position) => {
-                      const product = productsByPosition.get(position);
+                  <div className="mt-3 space-y-2 sm:mt-4 sm:space-y-4">
+                    {shelves.map((positions) => (
+                      <ul
+                        key={`shelf-${positions[0]}`}
+                        className="grid grid-cols-6 gap-2 sm:gap-4"
+                      >
+                        {positions.map((position) => {
+                          const product = productsByPosition.get(position);
 
-                      if (!product) {
-                        return (
-                          <li
-                            key={`empty-${position}`}
-                            aria-hidden="true"
-                            className="min-h-[140px]"
-                          />
-                        );
-                      }
+                          if (!product) {
+                            return (
+                              <li
+                                key={`empty-${position}`}
+                                aria-hidden="true"
+                                className="min-h-[100px] sm:min-h-[140px]"
+                              />
+                            );
+                          }
 
-                      return (
-                        <MultiSheetProductCard
-                          key={`${product.id}-${position}`}
-                          product={product}
-                          edition={machine.edition}
-                        />
-                      );
-                    })}
-                  </ul>
+                          return (
+                            <MultiSheetProductCard
+                              key={`${product.id}-${position}`}
+                              product={product}
+                              edition={machine.edition}
+                            />
+                          );
+                        })}
+                      </ul>
+                    ))}
+                  </div>
                 </section>
               )}
             </div>
@@ -347,7 +369,7 @@ function MultiSheetProductCard({
   return (
     <li>
       <div
-        className={`hover-sheen group flex h-full flex-col rounded-[1.25rem] p-5 sm:rounded-[1.75rem] ${
+        className={`hover-sheen group flex h-full flex-col rounded-[1rem] p-2.5 sm:rounded-[1.75rem] sm:p-5 ${
           isParty
             ? "party-surface party-glow party-hover"
             : "brand-surface brand-glow brand-hover"
@@ -355,14 +377,14 @@ function MultiSheetProductCard({
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="text-base font-bold tracking-tight sm:text-lg">
+            <h3 className="text-[0.7rem] leading-snug font-bold tracking-tight sm:text-lg">
               {product.name}
             </h3>
           </div>
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-3 pt-5">
-          <span className="text-lg font-extrabold tracking-tight">
+        <div className="mt-auto flex items-center justify-between gap-3 pt-3 sm:pt-5">
+          <span className="text-xs font-extrabold tracking-tight sm:text-lg">
             {product.price}
           </span>
         </div>
