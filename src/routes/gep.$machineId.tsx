@@ -59,6 +59,7 @@ function MachinePage() {
   const {
     products: multiSheetProducts,
     loading: productsLoading,
+    error: productsError,
     lastSync,
   } = useProductSync(15);
 
@@ -88,11 +89,18 @@ function MachinePage() {
     return false;
   });
 
-  // Create shelves from product shelf field for grouping (A, B, C, D, E, F, G, H, I, J order)
-  const shelfOrder = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-  const shelves = [...new Set(filteredProducts.map((product) => product.shelf))].sort((a, b) => {
-    return shelfOrder.indexOf(a) - shelfOrder.indexOf(b);
-  });
+  // The machine has 60 physical slots, numbered 10-69 in the sheet.
+  const productsByPosition = new Map(
+    filteredProducts.map((product) => [product.position, product]),
+  );
+  const firstPosition = 10;
+  const lastPosition = filteredProducts.length
+    ? Math.max(...filteredProducts.map((product) => product.position))
+    : firstPosition;
+  const gridPositions = Array.from(
+    { length: lastPosition - firstPosition + 1 },
+    (_, index) => firstPosition + index,
+  );
 
   return (
     <main className="relative min-h-[100svh] pb-16 sm:pb-24">
@@ -196,6 +204,10 @@ function MachinePage() {
               {productsLoading ? (
                 <p className="text-sm text-muted-foreground">
                   Termékek betöltése...
+                </p>
+              ) : productsError ? (
+                <p className="text-sm text-muted-foreground">
+                  A termékek betöltése nem sikerült. Kérjük, próbáld újra később.
                 </p>
               ) : filteredProducts.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
