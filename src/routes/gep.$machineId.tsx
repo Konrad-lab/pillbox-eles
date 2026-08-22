@@ -104,14 +104,14 @@ function MachinePage() {
       )
       .map((product) => [product.position, product]),
   );
+  // Products are pushed to the left of their shelf, so gaps stay at the end.
   const shelves = Array.from({ length: SHELF_COUNT }, (_, shelfIndex) =>
-    Array.from(
-      { length: SHELF_SIZE },
-      (_, slotIndex) => FIRST_POSITION + shelfIndex * SHELF_SIZE + slotIndex,
-    ),
-  ).filter((positions) =>
-    positions.some((position) => productsByPosition.has(position)),
-  );
+    Array.from({ length: SHELF_SIZE }, (_, slotIndex) =>
+      productsByPosition.get(
+        FIRST_POSITION + shelfIndex * SHELF_SIZE + slotIndex,
+      ),
+    ).filter((product) => product !== undefined),
+  ).filter((products) => products.length > 0);
 
   return (
     <main className="relative min-h-[100svh] pb-16 sm:pb-24">
@@ -236,34 +236,23 @@ function MachinePage() {
                     Termékek
                   </h2>
 
-                  <div className="mt-3 space-y-2 sm:mt-4 sm:space-y-4">
-                    {shelves.map((positions) => (
-                      <ul
-                        key={`shelf-${positions[0]}`}
-                        className="grid grid-cols-6 gap-1.5 sm:gap-4"
-                      >
-                        {positions.map((position) => {
-                          const product = productsByPosition.get(position);
+                  <div className="mt-3 space-y-3 sm:mt-4 sm:space-y-6">
+                    {shelves.map((products, shelfIndex) => (
+                      <div key={`shelf-${products[0].id}`}>
+                        <h3 className="text-[0.6rem] font-semibold tracking-[0.2em] text-muted-foreground uppercase sm:text-xs">
+                          {shelfIndex + 1}. polc
+                        </h3>
 
-                          if (!product) {
-                            return (
-                              <li
-                                key={`empty-${position}`}
-                                aria-hidden="true"
-                                className="min-w-0"
-                              />
-                            );
-                          }
-
-                          return (
+                        <ul className="mt-1.5 grid grid-cols-6 gap-1.5 sm:mt-2.5 sm:gap-4">
+                          {products.map((product) => (
                             <MultiSheetProductCard
-                              key={`${product.id}-${position}`}
+                              key={product.id}
                               product={product}
                               edition={machine.edition}
                             />
-                          );
-                        })}
-                      </ul>
+                          ))}
+                        </ul>
+                      </div>
                     ))}
                   </div>
                 </section>
