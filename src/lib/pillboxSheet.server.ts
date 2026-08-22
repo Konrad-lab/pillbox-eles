@@ -1,11 +1,11 @@
 import { MOCK_MACHINE_ROWS } from "@/data/mockMachines";
 import { MOCK_PRODUCT_ROWS } from "@/data/mockProducts";
-import type { MachineEdition, MachineRow, ProductRow } from "@/data/types";
+import type { MachineEdition, MachineRow, MachineStatus, ProductRow } from "@/data/types";
 import { readSheet, readServiceAccount } from "./sheets.server";
 import type { PillboxSheetPayload } from "./pillbox.functions";
 
 const PRODUCTS_RANGE = "products!A1:H";
-const MACHINES_RANGE = "machines!A1:L";
+const MACHINES_RANGE = "machines!A1:M";
 
 let cache: { payload: PillboxSheetPayload; expiresAt: number } | null = null;
 const CACHE_MS = 15 * 60_000; // 15 minutes
@@ -39,6 +39,7 @@ function toMachineRow(row: Record<string, string>): MachineRow | null {
     last_updated: row["last_updated"] || undefined,
     edition: (row["edition"] as MachineEdition) || undefined,
     period: row["period"] || undefined,
+    status: (row["status"] as MachineStatus) || undefined,
   };
 }
 

@@ -12,6 +12,7 @@ export const MOCK_MACHINE_ROWS: MachineRow[] = [
       "Első Pillbox automatánk gyógyszerészi szakmai felügyelet mellett összeállított kínálattal, a nap 24 órájában elérhetően.",
     availability: "0-24",
     edition: "health",
+    status: "temporarily_closed",
   },
   {
     machine_id: "PB-002",
@@ -21,7 +22,7 @@ export const MOCK_MACHINE_ROWS: MachineRow[] = [
     latitude: 46.9781,
     longitude: 17.9822,
     description:
-      "Fesztiválautomatánk a Tábor Fesztiválon: másnaposság elleni alapok, elektrolit, fájdalomcsillapítás, higiénia és napvédelem - éjjel-nappal, a helyszínen.",
+      "Pillbox - Partybox automatánk a Tábor Fesztiválon debütál. Keressétek a fesztiválok nélkülözhetetlen kiegészítőit: kötszerek, elektrolit porok, higiéniai termékek és fényvédők - éjjel-nappal, a helyszínen. Magadra figyelsz? Mi itt vagyunk!",
     availability: "0-24 a fesztivál ideje alatt",
     edition: "festival",
     period: "2026.08.26-30.",
