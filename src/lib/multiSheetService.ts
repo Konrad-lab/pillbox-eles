@@ -57,6 +57,43 @@ const getAuthClient = () => {
   });
 };
 
+const parseShelfFromId = (id: string): string => {
+  // ID format: A10, A11, B10, B11, etc. (normál gépeknél)
+  // OR 10, 11, 12, etc. (partybox-nál)
+  // A prefix figyelmen kívül hagyandó, csak a szám számít
+  if (!id) return 'A';
+
+  // Kinyerjük a számot az ID-ból (legyen A10 vagy 10)
+  let positionNumber: number;
+  if (/^\d+$/.test(id)) {
+    // Csak szám (pl. "10", "11")
+    positionNumber = parseInt(id, 10);
+  } else {
+    // Betű + szám (pl. "A10", "B11")
+    const numericPart = id.replace(/^[A-Za-z]/, '');
+    positionNumber = parseInt(numericPart, 10);
+  }
+
+  if (isNaN(positionNumber)) return 'A';
+
+  // Dupla érték kezelése (üres pozíció)
+  if (positionNumber === 0) return 'A';
+
+  // 6 pozíció/polc, 10 polc összesen
+  // 10-15 → A (1. polc)
+  // 16-21 → B (2. polc)
+  // 22-27 → C (3. polc)
+  // ...
+  const shelfIndex = Math.floor((positionNumber - 10) / 6);
+  const shelfLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+
+  if (shelfIndex >= 0 && shelfIndex < shelfLetters.length) {
+    return shelfLetters[shelfIndex];
+  }
+
+  return 'A';
+};
+
 /**
  * Az első oszlopból meghatározza a fizikai pozíciót.
  *

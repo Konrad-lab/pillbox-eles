@@ -71,53 +71,27 @@ function MachinePage() {
     }
   }, [machine]);
 
-  if (!isLoading && machines && !machine) {
-    throw notFound();
-  }
+  if (!isLoading && machines && !machine) throw notFound();
 
-  /*
-   * Each Google Sheet belongs to exactly one machine/location.
-   *
-   * Sheet 1 -> Kiskunfélegyháza
-   * Sheet 2 -> Alsóörs Partybox
-   * Sheet 3 -> Budaörs
-   *
-   * NEVER combine products from different sheets.
-   */
-  const machineSourceMap: Record<string, string> = {
-    "PB-001": "Kiskunfélegyháza",
-    "PB-002": "Alsóörs partybox",
-    "PB-003": "Sheet3",
-  };
+  // Filter products based on machine location
+  const filteredProducts = multiSheetProducts.filter(product => {
+    if (machine?.city === "Kiskunfélegyháza") {
+      return product.source === "Kiskunfélegyháza" || product.source === "Sheet1" || product.source === "Sheet3";
+    }
+    if (machine?.city === "Alsóörs") {
+      return product.source === "Alsóörs partybox";
+    }
+    if (machine?.city === "Budaörs") {
+      return product.source === "Sheet3" || product.source === "Budaörs";
+    }
+    return false;
+  });
 
-  const machineSource = machine
-    ? machineSourceMap[machine.id]
-    : undefined;
-
-  const filteredProducts = multiSheetProducts.filter(
-    (product) => product.source === machineSource
-  );
-
-  /*
-   * The physical machine has 10 rows × 6 positions = 60 positions.
-   *
-   * Position 10 is always the first position.
-   * Position 11 is the second.
-   * ...
-   * Position 69 is the 60th.
-   *
-   * We create ALL 60 cells, including empty ones.
-   * This is important because "dupla" positions must remain empty
-   * instead of causing later products to move forward.
-   */
-  const gridPositions = Array.from(
-    { length: 60 },
-    (_, index) => index + 10
-  );
-
-  const productsByPosition = new Map(
-    filteredProducts.map((product) => [product.position, product])
-  );
+  // Create shelves from product shelf field for grouping (A, B, C, D, E, F, G, H, I, J order)
+  const shelfOrder = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+  const shelves = [...new Set(filteredProducts.map((product) => product.shelf))].sort((a, b) => {
+    return shelfOrder.indexOf(a) - shelfOrder.indexOf(b);
+  });
 
   return (
     <main className="relative min-h-[100svh] pb-16 sm:pb-24">
