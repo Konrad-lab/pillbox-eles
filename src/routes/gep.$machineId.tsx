@@ -10,6 +10,7 @@ import { machinesQueryOptions } from "@/data/machineSource";
 
 import {
   formatPrice,
+  MACHINE_STATUS_LABEL,
   STOCK_LABEL,
   type MachineProduct,
   type MachineEdition,
@@ -123,6 +124,16 @@ function MachinePage() {
             >
               {machine.edition === "festival" && (
                 <span className="party-chip">Partybox edition</span>
+              )}
+
+              {machine.status === "temporarily_closed" && (
+                <span
+                  className={`inline-block rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800 ${
+                    machine.edition === "festival" ? "ml-2" : ""
+                  }`}
+                >
+                  {MACHINE_STATUS_LABEL.temporarily_closed}
+                </span>
               )}
 
               <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-balance sm:text-4xl">
