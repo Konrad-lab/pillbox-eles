@@ -7,6 +7,7 @@ export interface MultiSheetProduct {
   source: string;
   category: string;
   position: number;
+  shelf: string;
 }
 
 const sheetConfigs = [
@@ -345,6 +346,7 @@ export const fetchProductsFromSheets = async (): Promise<
         category: categorizeProduct(nameVal),
 
         position,
+        shelf: parseShelfFromId(idVal),
       });
     }
   }
