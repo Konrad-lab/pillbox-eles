@@ -7,7 +7,7 @@ import logo from "@/assets/logo.png";
 import partyLogo from "@/assets/logo-partybox.png";
 import { machinesQueryOptions } from "@/data/machineSource";
 import { HU_HEIGHT, HU_OUTLINE_PATH, HU_WIDTH, projectHU } from "@/data/hungaryOutline";
-import type { Machine } from "@/data/types";
+import { MACHINE_STATUS_LABEL, type Machine } from "@/data/types";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Reveal } from "./Reveal";
@@ -201,6 +201,15 @@ function MachinePanel({ machine, onClose }: { machine: Machine; onClose: () => v
       <div className="flex items-start justify-between gap-3 p-5 pb-0 sm:p-7 sm:pb-0">
         <div className="min-w-0">
           {festival && <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-[color:var(--brand)] text-white">Partybox</span>}
+          {machine.status === "temporarily_closed" && (
+            <span
+              className={`inline-block rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800 ${
+                festival ? "ml-2" : ""
+              }`}
+            >
+              {MACHINE_STATUS_LABEL.temporarily_closed}
+            </span>
+          )}
           <h3 className="mt-2 text-xl font-extrabold tracking-tight">{machine.name}</h3>
         </div>
         <button

@@ -54,9 +54,13 @@ export interface MachineRow {
   edition?: MachineEdition;
   /** Optional operating window, e.g. "2026.08.26-30." */
   period?: string;
+  /** "open" (default) or "temporarily_closed". */
+  status?: MachineStatus;
 }
 
 export type MachineEdition = "health" | "festival";
+
+export type MachineStatus = "open" | "temporarily_closed";
 
 /** A catalogue product as it is available in a given machine. */
 export interface MachineProduct extends Product {
@@ -79,6 +83,7 @@ export interface Machine {
   lastUpdated?: string;
   edition: MachineEdition;
   period?: string;
+  status: MachineStatus;
 }
 
 export function parseProductRow(row: ProductRow): Product {
@@ -122,6 +127,7 @@ export function parseMachineRow(row: MachineRow, catalog: Map<string, Product>):
     lastUpdated: row.last_updated,
     edition: row.edition ?? "health",
     period: row.period,
+    status: row.status ?? "open",
   };
 }
 
@@ -135,6 +141,11 @@ function splitList(value: string): string[] {
 export function formatPrice(price: number): string {
   return `${new Intl.NumberFormat("hu-HU").format(price)} Ft`;
 }
+
+export const MACHINE_STATUS_LABEL: Record<MachineStatus, string> = {
+  open: "Nyitva",
+  temporarily_closed: "Ideiglenesen zárva",
+};
 
 export const STOCK_LABEL: Record<StockStatus, string> = {
   in_stock: "Készleten",

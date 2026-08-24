@@ -10,12 +10,18 @@ import { machinesQueryOptions } from "@/data/machineSource";
 
 import {
   formatPrice,
+  MACHINE_STATUS_LABEL,
   STOCK_LABEL,
   type MachineProduct,
   type MachineEdition,
 } from "@/data/types";
 
 import { useProductSync } from "@/hooks/useProductSync";
+
+const FIRST_POSITION = 10;
+const SHELF_SIZE = 6;
+const SHELF_COUNT = 10;
+const LAST_POSITION = FIRST_POSITION + SHELF_SIZE * SHELF_COUNT - 1;
 
 export const Route = createFileRoute("/gep/$machineId")({
   head: (ctx) => {
@@ -58,6 +64,7 @@ function MachinePage() {
   const {
     products: multiSheetProducts,
     loading: productsLoading,
+    error: productsError,
     lastSync,
   } = useProductSync(15);
 
@@ -87,11 +94,24 @@ function MachinePage() {
     return false;
   });
 
-  // Create shelves from product shelf field for grouping (A, B, C, D, E, F, G, H, I, J order)
-  const shelfOrder = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-  const shelves = [...new Set(filteredProducts.map((product) => product.shelf))].sort((a, b) => {
-    return shelfOrder.indexOf(a) - shelfOrder.indexOf(b);
-  });
+  // 10 shelves of 6 slots, numbered 10-69 in the sheet: 10-15 is the top
+  // shelf left to right, 16-21 the next one down, and so on.
+  const productsByPosition = new Map(
+    filteredProducts
+      .filter(
+        (product) =>
+          product.position >= FIRST_POSITION && product.position <= LAST_POSITION,
+      )
+      .map((product) => [product.position, product]),
+  );
+  const shelves = Array.from({ length: SHELF_COUNT }, (_, shelfIndex) =>
+    Array.from(
+      { length: SHELF_SIZE },
+      (_, slotIndex) => FIRST_POSITION + shelfIndex * SHELF_SIZE + slotIndex,
+    ),
+  ).filter((positions) =>
+    positions.some((position) => productsByPosition.has(position)),
+  );
 
   return (
     <main className="relative min-h-[100svh] pb-16 sm:pb-24">
@@ -123,6 +143,16 @@ function MachinePage() {
             >
               {machine.edition === "festival" && (
                 <span className="party-chip">Partybox edition</span>
+              )}
+
+              {machine.status === "temporarily_closed" && (
+                <span
+                  className={`inline-block rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800 ${
+                    machine.edition === "festival" ? "ml-2" : ""
+                  }`}
+                >
+                  {MACHINE_STATUS_LABEL.temporarily_closed}
+                </span>
               )}
 
               <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-balance sm:text-4xl">
@@ -186,11 +216,16 @@ function MachinePage() {
                 <p className="text-sm text-muted-foreground">
                   Termékek betöltése...
                 </p>
+              ) : productsError ? (
+                <p className="text-sm text-muted-foreground">
+                  A termékek betöltése nem sikerült. Kérjük, próbáld újra később.
+                </p>
               ) : filteredProducts.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
                   Nincs elérhető termék ebben az automatában.
                 </p>
               ) : (
+<<<<<<< HEAD
                 shelves.map((shelf) => (
                   <section key={shelf}>
                     <ul className="grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -203,6 +238,50 @@ function MachinePage() {
                     </ul>
                   </section>
                 ))
+=======
+                <section>
+                  <h2
+                    className={`text-[0.65rem] font-semibold tracking-[0.2em] uppercase sm:text-xs ${
+                      machine.edition === "festival"
+                        ? "text-foreground"
+                        : "text-brand"
+                    }`}
+                  >
+                    Termékek
+                  </h2>
+
+                  <div className="mt-3 space-y-2 sm:mt-4 sm:space-y-4">
+                    {shelves.map((positions) => (
+                      <ul
+                        key={`shelf-${positions[0]}`}
+                        className="grid grid-cols-6 gap-1.5 sm:gap-4"
+                      >
+                        {positions.map((position) => {
+                          const product = productsByPosition.get(position);
+
+                          if (!product) {
+                            return (
+                              <li
+                                key={`empty-${position}`}
+                                aria-hidden="true"
+                                className="min-w-0"
+                              />
+                            );
+                          }
+
+                          return (
+                            <MultiSheetProductCard
+                              key={`${product.id}-${position}`}
+                              product={product}
+                              edition={machine.edition}
+                            />
+                          );
+                        })}
+                      </ul>
+                    ))}
+                  </div>
+                </section>
+>>>>>>> 22396b2353a41e74a5f7ad0e80127e270e8201bd
               )}
             </div>
           </>
@@ -299,24 +378,24 @@ function MultiSheetProductCard({
   const isParty = edition === "festival";
 
   return (
-    <li>
+    <li className="min-w-0">
       <div
-        className={`hover-sheen group flex h-full flex-col rounded-[1.25rem] p-5 sm:rounded-[1.75rem] ${
+        className={`hover-sheen group flex h-full flex-col rounded-[1rem] p-1.5 sm:rounded-[1.75rem] sm:p-5 ${
           isParty
             ? "party-surface party-glow party-hover"
             : "brand-surface brand-glow brand-hover"
         }`}
       >
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-1.5 sm:gap-3">
           <div className="min-w-0">
-            <h3 className="text-base font-bold tracking-tight sm:text-lg">
+            <h3 className="hyphens-auto text-[0.6rem] leading-tight font-bold tracking-tight break-words sm:text-lg sm:leading-snug">
               {product.name}
             </h3>
           </div>
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-3 pt-5">
-          <span className="text-lg font-extrabold tracking-tight">
+        <div className="mt-auto flex items-center justify-between gap-3 pt-2 sm:pt-5">
+          <span className="text-[0.6rem] font-extrabold tracking-tight break-words sm:text-lg">
             {product.price}
           </span>
         </div>
