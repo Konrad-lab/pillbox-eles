@@ -99,17 +99,17 @@ const parseShelfFromId = (id: string): string => {
  * Az első oszlopból meghatározza a fizikai pozíciót.
  *
  * Elfogadott:
- *   10
- *   11
- *   12
- *   A10
- *   A11
- *   A12
+ *   1
+ *   2
+ *   3
+ *   A1
+ *   A2
+ *   A3
  *
- * 10 = első hely
- * 11 = második hely
+ * 1 = első hely
+ * 2 = második hely
  * ...
- * 69 = hatvanadik hely
+ * 100 = századik hely
  */
 const parsePositionFromId = (id: string): number | null => {
   const value = String(id ?? "").trim();
@@ -124,7 +124,7 @@ const parsePositionFromId = (id: string): number | null => {
   }
 
   // Kikeressük a számot.
-  // Így működik a 10 és az A10 formátum is.
+  // Így működik a 1 és az A1 formátum is.
   const match = value.match(/\d+/);
 
   if (!match) {
@@ -133,8 +133,8 @@ const parsePositionFromId = (id: string): number | null => {
 
   const position = Number(match[0]);
 
-  // 10-69 = 60 fizikai hely
-  if (position < 10 || position > 69) {
+  // 1-100 = 100 fizikai hely
+  if (position < 1 || position > 100) {
     return null;
   }
 

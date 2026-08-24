@@ -18,6 +18,11 @@ import {
 
 import { useProductSync } from "@/hooks/useProductSync";
 
+const FIRST_POSITION = 1;
+const SHELF_SIZE = 10;
+const SHELF_COUNT = 10;
+const LAST_POSITION = FIRST_POSITION + SHELF_SIZE * SHELF_COUNT - 1;
+
 export const Route = createFileRoute("/gep/$machineId")({
   head: (ctx) => {
     const { machineId } = ctx.params;
@@ -89,11 +94,24 @@ function MachinePage() {
     return false;
   });
 
-  // Create shelves from product shelf field for grouping (A, B, C, D, E, F, G, H, I, J order)
-  const shelfOrder = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-  const shelves = [...new Set(filteredProducts.map((product) => product.shelf))].sort((a, b) => {
-    return shelfOrder.indexOf(a) - shelfOrder.indexOf(b);
-  });
+  // 10 shelves of 6 slots, numbered 10-69 in the sheet: 10-15 is the top
+  // shelf left to right, 16-21 the next one down, and so on.
+  const productsByPosition = new Map(
+    filteredProducts
+      .filter(
+        (product) =>
+          product.position >= FIRST_POSITION && product.position <= LAST_POSITION,
+      )
+      .map((product) => [product.position, product]),
+  );
+  const shelves = Array.from({ length: SHELF_COUNT }, (_, shelfIndex) =>
+    Array.from(
+      { length: SHELF_SIZE },
+      (_, slotIndex) => FIRST_POSITION + shelfIndex * SHELF_SIZE + slotIndex,
+    ),
+  ).filter((positions) =>
+    positions.some((position) => productsByPosition.has(position)),
+  );
 
   return (
     <main className="relative min-h-[100svh] pb-16 sm:pb-24">
@@ -207,18 +225,48 @@ function MachinePage() {
                   Nincs elérhető termék ebben az automatában.
                 </p>
               ) : (
-                shelves.map((shelf) => (
-                  <section key={shelf}>
-                    <ul className="grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
-                      {filteredProducts
-                        .filter((product) => product.shelf === shelf)
-                        .sort((a, b) => a.id.localeCompare(b.id))
-                        .map((product) => (
-                          <MultiSheetProductCard key={product.id} product={product} edition={machine.edition} />
-                        ))}
-                    </ul>
-                  </section>
-                ))
+                <section>
+                  <h2
+                    className={`text-[0.65rem] font-semibold tracking-[0.2em] uppercase sm:text-xs ${
+                      machine.edition === "festival"
+                        ? "text-foreground"
+                        : "text-brand"
+                    }`}
+                  >
+                    Termékek
+                  </h2>
+
+                  <div className="mt-3 space-y-2 sm:mt-4 sm:space-y-4">
+                    {shelves.map((positions) => (
+                      <ul
+                        key={`shelf-${positions[0]}`}
+                        className="grid grid-cols-6 gap-1.5 sm:gap-4"
+                      >
+                        {positions.map((position) => {
+                          const product = productsByPosition.get(position);
+
+                          if (!product) {
+                            return (
+                              <li
+                                key={`empty-${position}`}
+                                aria-hidden="true"
+                                className="min-w-0"
+                              />
+                            );
+                          }
+
+                          return (
+                            <MultiSheetProductCard
+                              key={`${product.id}-${position}`}
+                              product={product}
+                              edition={machine.edition}
+                            />
+                          );
+                        })}
+                      </ul>
+                    ))}
+                  </div>
+                </section>
               )}
             </div>
           </>
@@ -309,31 +357,30 @@ function MultiSheetProductCard({
     source: string;
     category: string;
     position: number;
-    shelf: string;
   };
   edition: MachineEdition;
 }) {
   const isParty = edition === "festival";
 
   return (
-    <li>
+    <li className="min-w-0">
       <div
-        className={`hover-sheen group flex h-full flex-col rounded-[1.25rem] p-5 sm:rounded-[1.75rem] ${
+        className={`hover-sheen group flex h-full flex-col rounded-[1rem] p-1.5 sm:rounded-[1.75rem] sm:p-5 ${
           isParty
             ? "party-surface party-glow party-hover"
             : "brand-surface brand-glow brand-hover"
         }`}
       >
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-1.5 sm:gap-3">
           <div className="min-w-0">
-            <h3 className="text-base font-bold tracking-tight sm:text-lg">
+            <h3 className="hyphens-auto text-[0.6rem] leading-tight font-bold tracking-tight break-words sm:text-lg sm:leading-snug">
               {product.name}
             </h3>
           </div>
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-3 pt-5">
-          <span className="text-lg font-extrabold tracking-tight">
+        <div className="mt-auto flex items-center justify-between gap-3 pt-2 sm:pt-5">
+          <span className="text-[0.6rem] font-extrabold tracking-tight break-words sm:text-lg">
             {product.price}
           </span>
         </div>
