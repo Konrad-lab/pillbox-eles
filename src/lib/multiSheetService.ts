@@ -79,12 +79,12 @@ const parseShelfFromId = (id: string): string => {
   // Dupla érték kezelése (üres pozíció)
   if (positionNumber === 0) return 'A';
 
-  // 6 pozíció/polc, 10 polc összesen
-  // 10-15 → A (1. polc)
-  // 16-21 → B (2. polc)
-  // 22-27 → C (3. polc)
+  // 10-es csoportok/polcok, 10 polc összesen
+  // 10-19 → A (1. polc)
+  // 20-29 → B (2. polc)
+  // 30-39 → C (3. polc)
   // ...
-  const shelfIndex = Math.floor((positionNumber - 10) / 6);
+  const shelfIndex = Math.floor((positionNumber - 10) / 10);
   const shelfLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 
   if (shelfIndex >= 0 && shelfIndex < shelfLetters.length) {

@@ -191,41 +191,18 @@ function MachinePage() {
                   Nincs elérhető termék ebben az automatában.
                 </p>
               ) : (
-                <section>
-                  <h2
-                    className={`text-[0.65rem] font-semibold tracking-[0.2em] uppercase sm:text-xs ${
-                      machine.edition === "festival"
-                        ? "text-foreground"
-                        : "text-brand"
-                    }`}
-                  >
-                    Termékek
-                  </h2>
-
-                  <ul className="mt-3 grid grid-cols-2 gap-3 sm:mt-4 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
-                    {gridPositions.map((position) => {
-                      const product = productsByPosition.get(position);
-
-                      if (!product) {
-                        return (
-                          <li
-                            key={`empty-${position}`}
-                            aria-hidden="true"
-                            className="min-h-[140px]"
-                          />
-                        );
-                      }
-
-                      return (
-                        <MultiSheetProductCard
-                          key={`${product.id}-${position}`}
-                          product={product}
-                          edition={machine.edition}
-                        />
-                      );
-                    })}
-                  </ul>
-                </section>
+                shelves.map((shelf) => (
+                  <section key={shelf}>
+                    <ul className="grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
+                      {filteredProducts
+                        .filter((product) => product.shelf === shelf)
+                        .sort((a, b) => a.id.localeCompare(b.id))
+                        .map((product) => (
+                          <MultiSheetProductCard key={product.id} product={product} edition={machine.edition} />
+                        ))}
+                    </ul>
+                  </section>
+                ))
               )}
             </div>
           </>
