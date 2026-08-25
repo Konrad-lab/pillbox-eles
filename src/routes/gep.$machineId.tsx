@@ -94,24 +94,11 @@ function MachinePage() {
     return false;
   });
 
-  // 10 shelves of 6 slots, numbered 10-69 in the sheet: 10-15 is the top
-  // shelf left to right, 16-21 the next one down, and so on.
-  const productsByPosition = new Map(
-    filteredProducts
-      .filter(
-        (product) =>
-          product.position >= FIRST_POSITION && product.position <= LAST_POSITION,
-      )
-      .map((product) => [product.position, product]),
-  );
-  const shelves = Array.from({ length: SHELF_COUNT }, (_, shelfIndex) =>
-    Array.from(
-      { length: SHELF_SIZE },
-      (_, slotIndex) => FIRST_POSITION + shelfIndex * SHELF_SIZE + slotIndex,
-    ),
-  ).filter((positions) =>
-    positions.some((position) => productsByPosition.has(position)),
-  );
+  // Create shelves from product shelf field for grouping (A, B, C, D, E, F, G, H, I, J order)
+  const shelfOrder = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+  const shelves = [...new Set(filteredProducts.map((product) => product.shelf))].sort((a, b) => {
+    return shelfOrder.indexOf(a) - shelfOrder.indexOf(b);
+  });
 
   return (
     <main className="relative min-h-[100svh] pb-16 sm:pb-24">
@@ -225,48 +212,18 @@ function MachinePage() {
                   Nincs elérhető termék ebben az automatában.
                 </p>
               ) : (
-                <section>
-                  <h2
-                    className={`text-[0.65rem] font-semibold tracking-[0.2em] uppercase sm:text-xs ${
-                      machine.edition === "festival"
-                        ? "text-foreground"
-                        : "text-brand"
-                    }`}
-                  >
-                    Termékek
-                  </h2>
-
-                  <div className="mt-3 space-y-2 sm:mt-4 sm:space-y-4">
-                    {shelves.map((positions) => (
-                      <ul
-                        key={`shelf-${positions[0]}`}
-                        className="grid grid-cols-6 gap-1.5 sm:gap-4"
-                      >
-                        {positions.map((position) => {
-                          const product = productsByPosition.get(position);
-
-                          if (!product) {
-                            return (
-                              <li
-                                key={`empty-${position}`}
-                                aria-hidden="true"
-                                className="min-w-0"
-                              />
-                            );
-                          }
-
-                          return (
-                            <MultiSheetProductCard
-                              key={`${product.id}-${position}`}
-                              product={product}
-                              edition={machine.edition}
-                            />
-                          );
-                        })}
-                      </ul>
-                    ))}
-                  </div>
-                </section>
+                shelves.map((shelf) => (
+                  <section key={shelf}>
+                    <ul className="grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
+                      {filteredProducts
+                        .filter((product) => product.shelf === shelf)
+                        .sort((a, b) => a.id.localeCompare(b.id))
+                        .map((product) => (
+                          <MultiSheetProductCard key={product.id} product={product} edition={machine.edition} />
+                        ))}
+                    </ul>
+                  </section>
+                ))
               )}
             </div>
           </>

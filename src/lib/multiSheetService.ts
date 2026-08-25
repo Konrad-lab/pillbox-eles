@@ -16,7 +16,7 @@ const sheetConfigs = [
     machineId: "PB-001",
     name: "Kiskunfélegyháza",
     sheetId: process.env.SHEET_ID_1,
-    range: "A2:C90",
+    range: "A2:C200",
     idColumn: 0,
     priceColumn: 1,
     nameColumn: 2,
@@ -26,7 +26,7 @@ const sheetConfigs = [
     machineId: "PB-002",
     name: "Alsóörs partybox",
     sheetId: process.env.SHEET_ID_2,
-    range: "A11:C80",
+    range: "A2:C200",
     idColumn: 0,
     priceColumn: 1,
     nameColumn: 2,
@@ -36,7 +36,7 @@ const sheetConfigs = [
     machineId: "PB-003",
     name: "Budaörs",
     sheetId: process.env.SHEET_ID_3,
-    range: "A2:C90",
+    range: "A2:C200",
     idColumn: 0,
     priceColumn: 1,
     nameColumn: 2,
@@ -81,12 +81,23 @@ const parseShelfFromId = (id: string): string => {
   if (positionNumber === 0) return 'A';
 
   // 10-es csoportok/polcok, 10 polc összesen
-  // 10-19 → A (1. polc)
-  // 20-29 → B (2. polc)
-  // 30-39 → C (3. polc)
-  // ...
+  // tízenX (10-19) → A (1. polc)
+  // huszonX (20-29) → B (2. polc)
+  // harmincX (30-39) → C (3. polc)
+  // negyvenX (40-49) → D (4. polc)
+  // ötvenX (50-59) → E (5. polc)
+  // hatvanX (60-69) → F (6. polc)
+  // hetvenX (70-79) → G (7. polc)
+  // nyolcvanX (80-89) → H (8. polc)
+  // kilencvenX (90-99) → I (9. polc)
+  // 100+ → J (10. polc)
   const shelfIndex = Math.floor((positionNumber - 10) / 10);
   const shelfLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+
+  // Ha a szám 10 alatt van, akkor az A polcra tesszük (fallback)
+  if (positionNumber < 10) {
+    return 'A';
+  }
 
   if (shelfIndex >= 0 && shelfIndex < shelfLetters.length) {
     return shelfLetters[shelfIndex];
@@ -134,7 +145,8 @@ const parsePositionFromId = (id: string): number | null => {
   const position = Number(match[0]);
 
   // 1-100 = 100 fizikai hely
-  if (position < 1 || position > 100) {
+  // Megengedjük a 0-t is, mert lehet, hogy van 0-as kód is
+  if (position < 0 || position > 100) {
     return null;
   }
 
