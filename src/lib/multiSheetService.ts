@@ -62,7 +62,7 @@ const parseShelfFromId = (id: string): string => {
   // ID format: A10, A11, B10, B11, etc. (normál gépeknél)
   // OR 10, 11, 12, etc. (partybox-nál)
   // A prefix figyelmen kívül hagyandó, csak a szám számít
-  if (!id) return 'A';
+  if (!id) return '1. polc';
 
   // Kinyerjük a számot az ID-ból (legyen A10 vagy 10)
   let positionNumber: number;
@@ -75,35 +75,35 @@ const parseShelfFromId = (id: string): string => {
     positionNumber = parseInt(numericPart, 10);
   }
 
-  if (isNaN(positionNumber)) return 'A';
+  if (isNaN(positionNumber)) return '1. polc';
 
   // Dupla érték kezelése (üres pozíció)
-  if (positionNumber === 0) return 'A';
+  if (positionNumber === 0) return '1. polc';
 
   // 10-es csoportok/polcok, 10 polc összesen
-  // tízenX (10-19) → A (1. polc)
-  // huszonX (20-29) → B (2. polc)
-  // harmincX (30-39) → C (3. polc)
-  // negyvenX (40-49) → D (4. polc)
-  // ötvenX (50-59) → E (5. polc)
-  // hatvanX (60-69) → F (6. polc)
-  // hetvenX (70-79) → G (7. polc)
-  // nyolcvanX (80-89) → H (8. polc)
-  // kilencvenX (90-99) → I (9. polc)
-  // 100+ → J (10. polc)
+  // tízenX (10-19) → 1. polc
+  // huszonX (20-29) → 2. polc
+  // harmincX (30-39) → 3. polc
+  // negyvenX (40-49) → 4. polc
+  // ötvenX (50-59) → 5. polc
+  // hatvanX (60-69) → 6. polc
+  // hetvenX (70-79) → 7. polc
+  // nyolcvanX (80-89) → 8. polc
+  // kilencvenX (90-99) → 9. polc
+  // 100+ → 10. polc
   const shelfIndex = Math.floor((positionNumber - 10) / 10);
-  const shelfLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 
-  // Ha a szám 10 alatt van, akkor az A polcra tesszük (fallback)
+  // Ha a szám 10 alatt van, akkor az 1. polcra tesszük (fallback)
   if (positionNumber < 10) {
-    return 'A';
+    return '1. polc';
   }
 
-  if (shelfIndex >= 0 && shelfIndex < shelfLetters.length) {
-    return shelfLetters[shelfIndex];
+  const shelfNumber = shelfIndex + 1;
+  if (shelfNumber >= 1 && shelfNumber <= 10) {
+    return `${shelfNumber}. polc`;
   }
 
-  return 'A';
+  return '1. polc';
 };
 
 /**
@@ -324,15 +324,15 @@ export const fetchProductsFromSheets = async (): Promise<
       }
 
       const idVal = row[result.config.idColumn]
-        ? String(row[result.config.idColumn]).trim()
+        ? String(row[result.config.idColumn]).trim().replace(/["']/g, '')
         : "";
 
       const priceVal = row[result.config.priceColumn]
-        ? String(row[result.config.priceColumn]).trim()
+        ? String(row[result.config.priceColumn]).trim().replace(/["']/g, '')
         : "";
 
       const nameVal = row[result.config.nameColumn]
-        ? String(row[result.config.nameColumn]).trim()
+        ? String(row[result.config.nameColumn]).trim().replace(/["']/g, '')
         : "";
 
       // "dupla" = üres hely.

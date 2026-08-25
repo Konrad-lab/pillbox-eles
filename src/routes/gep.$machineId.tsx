@@ -94,8 +94,8 @@ function MachinePage() {
     return false;
   });
 
-  // Create shelves from product shelf field for grouping (A, B, C, D, E, F, G, H, I, J order)
-  const shelfOrder = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+  // Create shelves from product shelf field for grouping (1. polc, 2. polc, 3. polc, etc.)
+  const shelfOrder = ['1. polc', '2. polc', '3. polc', '4. polc', '5. polc', '6. polc', '7. polc', '8. polc', '9. polc', '10. polc'];
   const shelves = [...new Set(filteredProducts.map((product) => product.shelf))].sort((a, b) => {
     return shelfOrder.indexOf(a) - shelfOrder.indexOf(b);
   });
@@ -334,6 +334,9 @@ function MultiSheetProductCard({
               {product.name}
             </h3>
           </div>
+          <span className="shrink-0 text-[0.5rem] font-semibold text-muted-foreground sm:text-xs">
+            #{product.position}
+          </span>
         </div>
 
         <div className="mt-auto flex items-center justify-between gap-3 pt-2 sm:pt-5">
