@@ -214,6 +214,9 @@ function MachinePage() {
               ) : (
                 shelves.map((shelf) => (
                   <section key={shelf}>
+                    <h2 className="mb-4 text-xl font-bold tracking-tight text-foreground">
+                      {shelf}
+                    </h2>
                     <ul className="grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
                       {filteredProducts
                         .filter((product) => product.shelf === shelf)

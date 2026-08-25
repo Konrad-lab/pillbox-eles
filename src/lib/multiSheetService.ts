@@ -331,9 +331,14 @@ export const fetchProductsFromSheets = async (): Promise<
         ? String(row[result.config.priceColumn]).trim().replace(/["']/g, '')
         : "";
 
-      const nameVal = row[result.config.nameColumn]
+      let nameVal = row[result.config.nameColumn]
         ? String(row[result.config.nameColumn]).trim().replace(/["']/g, '')
         : "";
+
+      // Remove numbers from product names for Alsóörs and Budaörs
+      if (result.config.name === "Alsóörs partybox" || result.config.name === "Budaörs") {
+        nameVal = nameVal.replace(/^\d+/, '').trim();
+      }
 
       // "dupla" = üres hely.
       // Nem jelenítjük meg termékként.
