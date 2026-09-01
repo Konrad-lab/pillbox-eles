@@ -83,13 +83,13 @@ function MachinePage() {
   // Filter products based on machine location
   const filteredProducts = multiSheetProducts.filter(product => {
     if (machine?.city === "Kiskunfélegyháza") {
-      return product.source === "Kiskunfélegyháza" || product.source === "Sheet1" || product.source === "Sheet3";
+      return product.source === "Kiskunfélegyháza";
     }
     if (machine?.city === "Alsóörs") {
       return product.source === "Alsóörs partybox";
     }
     if (machine?.city === "Budaörs") {
-      return product.source === "Sheet3" || product.source === "Budaörs";
+      return product.source === "Budaörs";
     }
     return false;
   });

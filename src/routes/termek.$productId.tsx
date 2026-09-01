@@ -40,12 +40,27 @@ function parseListedPrice(value: string): number {
 function ProductPage() {
   const { productId } = Route.useParams();
   const { gep: fromMachineId } = Route.useSearch();
-  const { data: catalog, isLoading: catalogLoading } = useQuery(productsQueryOptions);
   const { data: machines = [], isLoading: machinesLoading } = useQuery(machinesQueryOptions);
   const { products: inventory, loading: inventoryLoading } = useProductSync(15);
 
-  const loading = catalogLoading || machinesLoading || inventoryLoading;
+  const loading = machinesLoading || inventoryLoading;
 
+  // Get product catalog from SHEET_ID_4 using the same function as multiSheetService
+  const catalogData = useQuery({
+    queryKey: ["productCatalog", "sheet-4"],
+    queryFn: async () => {
+      try {
+        const { fetchProductCatalog } = await import("@/lib/productCatalog.server");
+        return await fetchProductCatalog();
+      } catch (error) {
+        console.error("Failed to fetch product catalog:", error);
+        return [];
+      }
+    },
+    staleTime: 15 * 60_000,
+  });
+
+  const catalog = catalogData.data || [];
   const catalogProduct = catalog?.find((item) => item.id === productId);
 
   const inventoryMatches = inventory.filter((item) => {
