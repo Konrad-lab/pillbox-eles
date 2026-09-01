@@ -1,4 +1,4 @@
-import { getPillboxData } from "@/lib/pillbox.functions";
+import { getPillboxData, getProductCatalog } from "@/lib/pillbox.functions";
 import { MOCK_MACHINE_ROWS } from "./mockMachines";
 import { MOCK_PRODUCT_ROWS } from "./mockProducts";
 import {
@@ -54,6 +54,8 @@ export function setPillboxDataSource(source: PillboxDataSource) {
 
 
 export async function loadProducts(): Promise<Product[]> {
+  const catalog = await getProductCatalog();
+  if (catalog.products.length) return catalog.products;
   const rows = await activeSource.fetchProductRows();
   return rows.map(parseProductRow);
 }
@@ -74,7 +76,7 @@ export const machinesQueryOptions = {
 };
 
 export const productsQueryOptions = {
-  queryKey: ["products", activeSource.id] as const,
+  queryKey: ["products", "sheet-4", activeSource.id] as const,
   queryFn: loadProducts,
   staleTime: 5 * 60_000,
 };

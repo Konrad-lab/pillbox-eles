@@ -4,9 +4,14 @@ import { ArrowLeft, Building2, Info, MapPin, Package } from "lucide-react";
 import { Ambient } from "@/components/site/Ambient";
 import { PageHeader } from "@/components/site/PageHeader";
 import { machinesQueryOptions, productsQueryOptions } from "@/data/machineSource";
-import { formatPrice, STOCK_LABEL } from "@/data/types";
+import { formatPrice, type Product } from "@/data/types";
+import { useProductSync } from "@/hooks/useProductSync";
+import { productNamesMatch, slugifyProductName } from "@/lib/productMatch";
 
 export const Route = createFileRoute("/termek/$productId")({
+  validateSearch: (search: Record<string, unknown>): { gep?: string } => ({
+    gep: typeof search.gep === "string" ? search.gep : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Termékinformáció - Pillbox" },
@@ -27,22 +32,66 @@ export const Route = createFileRoute("/termek/$productId")({
   component: ProductPage,
 });
 
+function parseListedPrice(value: string): number {
+  const digits = value.replace(/[^\d]/g, "");
+  return digits ? Number(digits) || 0 : 0;
+}
+
 function ProductPage() {
   const { productId } = Route.useParams();
-  const { data: products, isLoading } = useQuery(productsQueryOptions);
-  const { data: machines = [] } = useQuery(machinesQueryOptions);
-  const product = products?.find((item) => item.id === productId);
+  const { gep: fromMachineId } = Route.useSearch();
+  const { data: catalog, isLoading: catalogLoading } = useQuery(productsQueryOptions);
+  const { data: machines = [], isLoading: machinesLoading } = useQuery(machinesQueryOptions);
+  const { products: inventory, loading: inventoryLoading } = useProductSync(15);
 
-  if (!isLoading && products && !product) throw notFound();
+  const loading = catalogLoading || machinesLoading || inventoryLoading;
 
-  const availability = machines
-    .map((machine) => ({
-      machine,
-      entry: machine.products.find((item) => item.id === productId),
+  const catalogProduct = catalog?.find((item) => item.id === productId);
+
+  const inventoryMatches = inventory.filter((item) => {
+    if (item.catalogId === productId) return true;
+    if (slugifyProductName(item.name) === productId) return true;
+    if (catalogProduct && productNamesMatch(item.name, catalogProduct.name)) return true;
+    return false;
+  });
+
+  const fallbackName = inventoryMatches[0]?.name;
+  const fallbackPrice = inventoryMatches[0]?.price;
+
+  const product: Product | undefined = catalogProduct
+    ? catalogProduct
+    : fallbackName
+      ? {
+          id: productId,
+          name: fallbackName,
+          price: parseListedPrice(fallbackPrice ?? ""),
+          category: inventoryMatches[0]?.category ?? "",
+          info: "",
+          description: "",
+        }
+      : undefined;
+
+  if (!loading && !product) throw notFound();
+
+  const availability = inventoryMatches
+    .map((entry) => ({
+      entry,
+      machine: machines.find((machine) => machine.id === entry.machineId),
     }))
-    .filter((row) => row.entry);
+    .filter((row) => row.machine);
 
-  const isPartyProduct = availability.some(({ machine }) => machine.edition === "festival");
+  const isPartyProduct = availability.some(({ machine }) => machine?.edition === "festival");
+
+  const displayPrice =
+    product && product.price > 0
+      ? formatPrice(product.price)
+      : fallbackPrice
+        ? fallbackPrice.includes("Ft")
+          ? fallbackPrice
+          : `${fallbackPrice} Ft`
+        : null;
+
+  const backToMachine = fromMachineId && machines.some((machine) => machine.id === fromMachineId);
 
   return (
     <main className="relative min-h-[100svh] pb-16 sm:pb-24">
@@ -50,35 +99,60 @@ function ProductPage() {
       <PageHeader />
 
       <div className="section-shell pt-24 sm:pt-32">
-        <Link
-          to="/"
-          hash="map"
-          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> Vissza a térképhez
-        </Link>
+        {backToMachine && fromMachineId ? (
+          <Link
+            to="/gep/$machineId"
+            params={{ machineId: fromMachineId }}
+            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" /> Vissza az automatához
+          </Link>
+        ) : (
+          <Link
+            to="/"
+            hash="map"
+            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" /> Vissza a térképhez
+          </Link>
+        )}
 
         {!product ? (
           <p className="mt-10 text-sm text-muted-foreground">Termék betöltése…</p>
         ) : (
           <div className="mt-5 grid gap-4 sm:mt-7 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">
-            <article className={`rounded-[1.5rem] p-5 sm:rounded-[2.5rem] sm:p-9 ${
-              isPartyProduct ? "party-surface" : "glass-strong"
-            }`}>
+            <article
+              className={`rounded-[1.5rem] p-5 sm:rounded-[2.5rem] sm:p-9 ${
+                isPartyProduct ? "party-surface" : "glass-strong"
+              }`}
+            >
               <h1 className="text-2xl font-extrabold tracking-tight text-balance sm:text-4xl">
                 {product.name}
               </h1>
-              <p className={`mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl ${
-                isPartyProduct ? "text-foreground" : "text-brand-deep"
-              }`}>
-                {formatPrice(product.price)}
-              </p>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                {product.info}
-              </p>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                {product.description}
-              </p>
+              {displayPrice && (
+                <p
+                  className={`mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl ${
+                    isPartyProduct ? "text-foreground" : "text-brand-deep"
+                  }`}
+                >
+                  {displayPrice}
+                </p>
+              )}
+              {product.info && (
+                <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                  {product.info}
+                </p>
+              )}
+              {product.description && product.description !== product.info && (
+                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                  {product.description}
+                </p>
+              )}
+              {!product.description && !product.info && (
+                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                  Ehhez a termékhez még nincs részletes leírás a katalógusban.
+                </p>
+              )}
 
               <dl className="mt-6 grid gap-3 sm:grid-cols-2">
                 {product.packageSize && (
@@ -106,9 +180,11 @@ function ProductPage() {
               </p>
             </article>
 
-            <aside className={`h-fit rounded-[1.5rem] p-5 sm:rounded-[2.5rem] sm:p-7 ${
-              isPartyProduct ? "party-surface" : "glass-panel"
-            }`}>
+            <aside
+              className={`h-fit rounded-[1.5rem] p-5 sm:rounded-[2.5rem] sm:p-7 ${
+                isPartyProduct ? "party-surface" : "glass-panel"
+              }`}
+            >
               <h2 className="text-sm font-semibold">Hol érhető el?</h2>
               {availability.length === 0 ? (
                 <p className="mt-3 text-sm text-muted-foreground">
@@ -116,24 +192,26 @@ function ProductPage() {
                 </p>
               ) : (
                 <ul className="mt-4 space-y-3">
-                  {availability.map(({ machine, entry }) => (
-                    <li key={machine.id}>
-                      <Link
-                        to="/gep/$machineId"
-                        params={{ machineId: machine.id }}
-                        className="glass-subtle block rounded-2xl p-4 transition-transform duration-300 hover:-translate-y-0.5"
-                      >
-                        <span className="flex items-center gap-2 text-sm font-semibold">
-                          <MapPin className="h-4 w-4 text-brand" />
-                          {machine.name}
-                        </span>
-                        <span className="mt-1 block text-xs text-muted-foreground">
-                          {machine.address}, {machine.city} ·{" "}
-                          {entry ? STOCK_LABEL[entry.stock] : ""}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
+                  {availability.map(({ machine, entry }) =>
+                    machine ? (
+                      <li key={`${machine.id}-${entry.id}`}>
+                        <Link
+                          to="/gep/$machineId"
+                          params={{ machineId: machine.id }}
+                          className="glass-subtle block rounded-2xl p-4 transition-transform duration-300 hover:-translate-y-0.5"
+                        >
+                          <span className="flex items-center gap-2 text-sm font-semibold">
+                            <MapPin className="h-4 w-4 text-brand" />
+                            {machine.name}
+                          </span>
+                          <span className="mt-1 block text-xs text-muted-foreground">
+                            {machine.address}, {machine.city}
+                            {entry.price ? ` · ${entry.price}` : ""}
+                          </span>
+                        </Link>
+                      </li>
+                    ) : null,
+                  )}
                 </ul>
               )}
             </aside>

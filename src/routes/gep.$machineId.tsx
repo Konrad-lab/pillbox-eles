@@ -222,7 +222,12 @@ function MachinePage() {
                         .filter((product) => product.shelf === shelf)
                         .sort((a, b) => a.id.localeCompare(b.id))
                         .map((product) => (
-                          <MultiSheetProductCard key={product.id} product={product} edition={machine.edition} />
+                          <MultiSheetProductCard
+                            key={product.id}
+                            product={product}
+                            edition={machine.edition}
+                            machineId={machine.id}
+                          />
                         ))}
                     </ul>
                   </section>
@@ -309,6 +314,7 @@ function ProductCard({
 function MultiSheetProductCard({
   product,
   edition,
+  machineId,
 }: {
   product: {
     id: string;
@@ -317,14 +323,19 @@ function MultiSheetProductCard({
     source: string;
     category: string;
     position: number;
+    catalogId: string;
   };
   edition: MachineEdition;
+  machineId: string;
 }) {
   const isParty = edition === "festival";
 
   return (
     <li className="min-w-0">
-      <div
+      <Link
+        to="/termek/$productId"
+        params={{ productId: product.catalogId }}
+        search={{ gep: machineId }}
         className={`hover-sheen group flex h-full flex-col rounded-[1rem] p-1.5 sm:rounded-[1.75rem] sm:p-5 ${
           isParty
             ? "party-surface party-glow party-hover"
@@ -346,8 +357,21 @@ function MultiSheetProductCard({
           <span className="text-[0.6rem] font-extrabold tracking-tight break-words sm:text-lg">
             {product.price}
           </span>
+
+          <span
+            className={`hidden items-center gap-1.5 text-sm font-semibold sm:inline-flex ${
+              isParty ? "text-[var(--party-pink)]" : "text-brand-deep"
+            }`}
+          >
+            Adatlap
+            <ArrowRight
+              className={`h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 ${
+                isParty ? "text-[var(--party-pink)]" : ""
+              }`}
+            />
+          </span>
         </div>
-      </div>
+      </Link>
     </li>
   );
 }

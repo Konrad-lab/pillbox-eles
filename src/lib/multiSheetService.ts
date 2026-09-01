@@ -1,13 +1,19 @@
 import { google } from "googleapis";
+import { loadVariablesEnv } from "./loadVariablesEnv";
+import { findMatchingProduct, slugifyProductName } from "./productMatch";
+import { fetchProductCatalog } from "./productCatalog.server";
 
 export interface MultiSheetProduct {
   id: string;
   price: string;
   name: string;
   source: string;
+  machineId: string;
   category: string;
   position: number;
   shelf: string;
+  /** Catalogue id from SHEET_ID_4, or a name slug when the item is only on a machine. */
+  catalogId: string;
 }
 
 const sheetConfigs = [
@@ -269,6 +275,7 @@ const categorizeProduct = (name: string): string => {
 export const fetchProductsFromSheets = async (): Promise<
   MultiSheetProduct[]
 > => {
+  loadVariablesEnv();
   const auth = getAuthClient();
 
   const sheets = google.sheets({
@@ -359,11 +366,13 @@ export const fetchProductsFromSheets = async (): Promise<
 
         // A source mostantól stabilan a helyszínt jelenti.
         source: result.config.name,
+        machineId: result.config.machineId,
 
         category: categorizeProduct(nameVal),
 
         position,
         shelf: parseShelfFromId(idVal),
+        catalogId: slugifyProductName(nameVal),
       });
     }
   }
@@ -377,6 +386,18 @@ export const fetchProductsFromSheets = async (): Promise<
 
     return a.position - b.position;
   });
+
+  try {
+    const catalog = await fetchProductCatalog();
+    if (catalog.length) {
+      for (const product of products) {
+        const match = findMatchingProduct(product.name, catalog);
+        if (match) product.catalogId = match.id;
+      }
+    }
+  } catch (error) {
+    console.error("Termékkatalógus (SHEET_ID_4) betöltése sikertelen:", error);
+  }
 
   return products;
 };
