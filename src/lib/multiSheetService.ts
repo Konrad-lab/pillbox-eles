@@ -29,16 +29,6 @@ const sheetConfigs = [
   },
   {
     // 2. Google Sheet -> 2. automata
-    machineId: "PB-002",
-    name: "Alsóörs partybox",
-    sheetId: process.env.SHEET_ID_2,
-    range: "A2:C200",
-    idColumn: 0,
-    priceColumn: 1,
-    nameColumn: 2,
-  },
-  {
-    // 3. Google Sheet -> 3. automata
     machineId: "PB-003",
     name: "Budaörs",
     sheetId: process.env.SHEET_ID_3,
@@ -68,7 +58,7 @@ const parseShelfFromId = (id: string): string => {
   // ID format: A10, A11, B10, B11, etc. (normál gépeknél)
   // OR 10, 11, 12, etc. (partybox-nál)
   // A prefix figyelmen kívül hagyandó, csak a szám számít
-  if (!id) return '1. polc';
+  if (!id) return "1. polc";
 
   // Kinyerjük a számot az ID-ból (legyen A10 vagy 10)
   let positionNumber: number;
@@ -77,14 +67,14 @@ const parseShelfFromId = (id: string): string => {
     positionNumber = parseInt(id, 10);
   } else {
     // Betű + szám (pl. "A10", "B11")
-    const numericPart = id.replace(/^[A-Za-z]/, '');
+    const numericPart = id.replace(/^[A-Za-z]/, "");
     positionNumber = parseInt(numericPart, 10);
   }
 
-  if (isNaN(positionNumber)) return '1. polc';
+  if (isNaN(positionNumber)) return "1. polc";
 
   // Dupla érték kezelése (üres pozíció)
-  if (positionNumber === 0) return '1. polc';
+  if (positionNumber === 0) return "1. polc";
 
   // 10-es csoportok/polcok, 10 polc összesen
   // tízenX (10-19) → 1. polc
@@ -101,7 +91,7 @@ const parseShelfFromId = (id: string): string => {
 
   // Ha a szám 10 alatt van, akkor az 1. polcra tesszük (fallback)
   if (positionNumber < 10) {
-    return '1. polc';
+    return "1. polc";
   }
 
   const shelfNumber = shelfIndex + 1;
@@ -109,7 +99,7 @@ const parseShelfFromId = (id: string): string => {
     return `${shelfNumber}. polc`;
   }
 
-  return '1. polc';
+  return "1. polc";
 };
 
 /**
@@ -272,9 +262,7 @@ const categorizeProduct = (name: string): string => {
   return "Egyéb";
 };
 
-export const fetchProductsFromSheets = async (): Promise<
-  MultiSheetProduct[]
-> => {
+export const fetchProductsFromSheets = async (): Promise<MultiSheetProduct[]> => {
   loadVariablesEnv();
   const auth = getAuthClient();
 
@@ -312,16 +300,11 @@ export const fetchProductsFromSheets = async (): Promise<
           error: error?.message || "Ismeretlen Google Sheets hiba",
         };
       }
-    })
+    }),
   );
 
   for (const result of results) {
     if (result.error) {
-      console.error(
-        `Hiba a(z) ${result.config.name} sheetnél:`,
-        result.error
-      );
-
       continue;
     }
 
@@ -331,20 +314,20 @@ export const fetchProductsFromSheets = async (): Promise<
       }
 
       const idVal = row[result.config.idColumn]
-        ? String(row[result.config.idColumn]).trim().replace(/["']/g, '')
+        ? String(row[result.config.idColumn]).trim().replace(/["']/g, "")
         : "";
 
       const priceVal = row[result.config.priceColumn]
-        ? String(row[result.config.priceColumn]).trim().replace(/["']/g, '')
+        ? String(row[result.config.priceColumn]).trim().replace(/["']/g, "")
         : "";
 
       let nameVal = row[result.config.nameColumn]
-        ? String(row[result.config.nameColumn]).trim().replace(/["']/g, '')
+        ? String(row[result.config.nameColumn]).trim().replace(/["']/g, "")
         : "";
 
-      // Remove numbers from product names for Alsóörs and Budaörs
-      if (result.config.name === "Alsóörs partybox" || result.config.name === "Budaörs") {
-        nameVal = nameVal.replace(/^\d+/, '').trim();
+      // Remove numbers from product names for Budaörs
+      if (result.config.name === "Budaörs") {
+        nameVal = nameVal.replace(/^\d+/, "").trim();
       }
 
       // "dupla" = üres hely.
@@ -396,7 +379,7 @@ export const fetchProductsFromSheets = async (): Promise<
       }
     }
   } catch (error) {
-    console.error("Termékkatalógus (SHEET_ID_4) betöltése sikertelen:", error);
+    // Product catalog load failed silently
   }
 
   return products;

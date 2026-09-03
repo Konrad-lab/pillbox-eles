@@ -53,42 +53,38 @@ export async function loadPillboxSheet(): Promise<PillboxSheetPayload> {
   const now = Date.now();
   if (cache && cache.expiresAt > now) return cache.payload;
 
-  const spreadsheetIdKkfha = process.env["GOOGLE_SHEET_ID_KKFHAZA"];
-  const spreadsheetIdAlsoors = process.env["GOOGLE_SHEET_ID_ALSOORS"];
-  
+  const spreadsheetId = process.env["SHEET_ID_2"];
+
   if (!readServiceAccount()) return mockPayload;
 
   try {
     const allProductRows: ProductRow[] = [];
     const allMachineRows: MachineRow[] = [];
 
-    // Read from Kiskunfélegyháza sheet
-    if (spreadsheetIdKkfha) {
+    // Read from the sheet (now contains Kiskunfélegyháza data)
+    if (spreadsheetId) {
       const [productRows, machineRows] = await Promise.all([
-        readSheet(spreadsheetIdKkfha, PRODUCTS_RANGE),
-        readSheet(spreadsheetIdKkfha, MACHINES_RANGE),
+        readSheet(spreadsheetId, PRODUCTS_RANGE),
+        readSheet(spreadsheetId, MACHINES_RANGE),
       ]);
-      allProductRows.push(...productRows.map(toProductRow).filter((row): row is ProductRow => row !== null));
-      allMachineRows.push(...machineRows.map(toMachineRow).filter((row): row is MachineRow => row !== null));
-    }
-
-    // Read from Alsóörs sheet
-    if (spreadsheetIdAlsoors) {
-      const [productRows, machineRows] = await Promise.all([
-        readSheet(spreadsheetIdAlsoors, PRODUCTS_RANGE),
-        readSheet(spreadsheetIdAlsoors, MACHINES_RANGE),
-      ]);
-      allProductRows.push(...productRows.map(toProductRow).filter((row): row is ProductRow => row !== null));
-      allMachineRows.push(...machineRows.map(toMachineRow).filter((row): row is MachineRow => row !== null));
+      allProductRows.push(
+        ...productRows.map(toProductRow).filter((row): row is ProductRow => row !== null),
+      );
+      allMachineRows.push(
+        ...machineRows.map(toMachineRow).filter((row): row is MachineRow => row !== null),
+      );
     }
 
     if (!allProductRows.length || !allMachineRows.length) return mockPayload;
 
-    const payload: PillboxSheetPayload = { source: "sheet", products: allProductRows, machines: allMachineRows };
+    const payload: PillboxSheetPayload = {
+      source: "sheet",
+      products: allProductRows,
+      machines: allMachineRows,
+    };
     cache = { payload, expiresAt: now + CACHE_MS };
     return payload;
   } catch (error) {
-    console.error("Pillbox sheet load failed:", error);
     return mockPayload;
   }
 }

@@ -3,12 +3,7 @@ import { Link } from "@tanstack/react-router";
 import logo from "@/assets/logo.png";
 
 const TikTokIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
-  <svg
-    className={className}
-    fill="currentColor"
-    viewBox="0 0 24 24"
-    aria-hidden="true"
-  >
+  <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.29 0 .58.04.85.12V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.68 6.34 6.34 0 0 0 9.34 22a6.34 6.34 0 0 0 6.33-6.32V8.34a8.13 8.13 0 0 0 4.92 1.63V6.52a4.85 4.85 0 0 1-1-.15z" />
   </svg>
 );
@@ -17,17 +12,17 @@ const SOCIAL_LINKS = [
   {
     name: "Facebook",
     icon: Facebook,
-    href: "https://www.facebook.com/people/Pillbox-Hungary/61591185210639", 
+    href: "https://www.facebook.com/people/Pillbox-Hungary/61591185210639",
   },
   {
     name: "Instagram",
     icon: Instagram,
-    href: "https://www.instagram.com/pillboxhungary", 
+    href: "https://www.instagram.com/pillboxhungary",
   },
   {
     name: "TikTok",
-    icon: TikTokIcon, 
-    href: "https://www.tiktok.com/@pillboxhungary", 
+    icon: TikTokIcon,
+    href: "https://www.tiktok.com/@pillboxhungary",
   },
 ];
 

@@ -11,7 +11,11 @@ const COMPANY = {
 
 export function Contact() {
   return (
-    <section id="contact" className="relative overflow-hidden py-16 sm:py-28" style={{ containIntrinsicSize: "0 500px", contentVisibility: "auto" }}>
+    <section
+      id="contact"
+      className="relative overflow-hidden py-16 sm:py-28"
+      style={{ containIntrinsicSize: "0 500px", contentVisibility: "auto" }}
+    >
       <div className="section-shell">
         <Reveal className="mx-auto max-w-2xl text-center">
           <p className="text-[0.65rem] font-semibold tracking-[0.2em] text-brand uppercase sm:text-xs">

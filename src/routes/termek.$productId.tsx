@@ -53,7 +53,6 @@ function ProductPage() {
         const { fetchProductCatalog } = await import("@/lib/productCatalog.server");
         return await fetchProductCatalog();
       } catch (error) {
-        console.error("Failed to fetch product catalog:", error);
         return [];
       }
     },

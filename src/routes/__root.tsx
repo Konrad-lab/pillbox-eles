@@ -34,7 +34,6 @@ function NotFoundComponent() {
 }
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
-  console.error(error);
   const router = useRouter();
 
   return (
@@ -74,10 +73,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Pillbox - Egészségügyi automata hálózat" },
-      { name: "description", content: "A Pillbox okos automatái vitaminokat, elsősegély- és higiéniai termékeket tesznek elérhetővé 0-24, gyógyszerészi szakmai háttérrel." },
+      {
+        name: "description",
+        content:
+          "A Pillbox okos automatái vitaminokat, elsősegély- és higiéniai termékeket tesznek elérhetővé 0-24, gyógyszerészi szakmai háttérrel.",
+      },
       { name: "author", content: "RAGAMINI Kft." },
       { property: "og:title", content: "Pillbox - Egészség, karnyújtásnyira" },
-      { property: "og:description", content: "Találd meg a hozzád legközelebbi Pillbox automatát, és nézd meg az elérhető termékeket és árakat." },
+      {
+        property: "og:description",
+        content:
+          "Találd meg a hozzád legközelebbi Pillbox automatát, és nézd meg az elérhető termékeket és árakat.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

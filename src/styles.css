@@ -188,7 +188,6 @@
   ::selection {
     background: color-mix(in oklab, var(--brand) 25%, transparent);
   }
-
 }
 
 @media (max-width: 640px) {
@@ -418,7 +417,8 @@
 }
 
 @keyframes party-glow {
-  0%, 100% {
+  0%,
+  100% {
     filter: brightness(1);
   }
   50% {
@@ -450,7 +450,8 @@
 }
 
 @keyframes brand-glow {
-  0%, 100% {
+  0%,
+  100% {
     filter: brightness(1);
   }
   50% {

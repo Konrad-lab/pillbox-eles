@@ -26,7 +26,10 @@ const FEATURES = [
 
 export function Features() {
   return (
-    <section className="section-shell py-14 sm:py-24" style={{ containIntrinsicSize: "0 400px", contentVisibility: "auto" }}>
+    <section
+      className="section-shell py-14 sm:py-24"
+      style={{ containIntrinsicSize: "0 400px", contentVisibility: "auto" }}
+    >
       <Reveal className="mx-auto max-w-2xl text-center">
         <h2 className="text-2xl font-extrabold tracking-tight text-balance sm:text-4xl">
           Modern egészségügyi ellátás, automatizálva

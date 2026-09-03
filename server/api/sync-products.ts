@@ -1,5 +1,5 @@
-import { defineEventHandler, createError } from 'h3';
-import { fetchProductsFromSheets } from '../utils/sheetsService';
+import { defineEventHandler, createError } from "h3";
+import { fetchProductsFromSheets } from "../utils/sheetsService";
 
 export default defineEventHandler(async () => {
   try {
@@ -13,7 +13,7 @@ export default defineEventHandler(async () => {
   } catch (error: any) {
     throw createError({
       statusCode: 500,
-      statusMessage: 'Nem sikerült szinkronizálni a Google Sheets adatokat.',
+      statusMessage: "Nem sikerült szinkronizálni a Google Sheets adatokat.",
       data: error.message,
     });
   }

@@ -26,9 +26,12 @@ export function MapSection() {
     setSelected(machine);
   };
 
-
   return (
-    <section id="map" className="section-shell py-16 sm:py-28" style={{ containIntrinsicSize: "0 600px", contentVisibility: "auto" }}>
+    <section
+      id="map"
+      className="section-shell py-16 sm:py-28"
+      style={{ containIntrinsicSize: "0 600px", contentVisibility: "auto" }}
+    >
       <Reveal className="mx-auto max-w-2xl text-center">
         <p className="text-[0.65rem] font-semibold tracking-[0.2em] text-brand uppercase sm:text-xs">
           Térkép
@@ -83,7 +86,6 @@ export function MapSection() {
                       if (event.button !== 0 && event.pointerType === "mouse") return;
                       openMachine(machine);
                     }}
-
 
                     role="button"
                     tabIndex={0}
@@ -142,7 +144,6 @@ export function MapSection() {
                       {machine.city}
                     </text>
                   </g>
-
                 );
               })}
             </svg>
@@ -200,7 +201,11 @@ function MachinePanel({ machine, onClose }: { machine: Machine; onClose: () => v
     >
       <div className="flex items-start justify-between gap-3 p-5 pb-0 sm:p-7 sm:pb-0">
         <div className="min-w-0">
-          {festival && <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-[color:var(--brand)] text-white">Partybox</span>}
+          {festival && (
+            <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-[color:var(--brand)] text-white">
+              Partybox
+            </span>
+          )}
           {machine.status === "temporarily_closed" && (
             <span
               className={`inline-block rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800 ${
@@ -239,11 +244,7 @@ function MachinePanel({ machine, onClose }: { machine: Machine; onClose: () => v
 
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{machine.description}</p>
 
-        <Button 
-          asChild 
-          size="lg" 
-          className={`mt-6 h-12 w-full rounded-full`}
-        >
+        <Button asChild size="lg" className={`mt-6 h-12 w-full rounded-full`}>
           <Link to="/gep/$machineId" params={{ machineId: machine.id }}>
             Termékek megtekintése
           </Link>

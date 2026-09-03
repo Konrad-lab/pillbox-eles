@@ -52,7 +52,6 @@ export function setPillboxDataSource(source: PillboxDataSource) {
   activeSource = source;
 }
 
-
 export async function loadProducts(): Promise<Product[]> {
   const catalog = await getProductCatalog();
   if (catalog.products.length) return catalog.products;

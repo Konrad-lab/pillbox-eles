@@ -1,5 +1,5 @@
-import { defineEventHandler } from 'h3';
-import { fetchProductsFromSheets } from '../utils/sheetsService';
+import { defineEventHandler } from "h3";
+import { fetchProductsFromSheets } from "../utils/sheetsService";
 
 export default defineEventHandler(async () => {
   try {

@@ -81,21 +81,37 @@ function MachinePage() {
   if (!isLoading && machines && !machine) throw notFound();
 
   // Filter products based on machine location
-  const filteredProducts = multiSheetProducts.filter(product => {
+  const filteredProducts = multiSheetProducts.filter((product) => {
     if (machine?.city === "Kiskunfélegyháza") {
-      return product.source === "Kiskunfélegyháza";
-    }
-    if (machine?.city === "Alsóörs") {
-      return product.source === "Alsóörs partybox";
+      return (
+        product.source === "Kiskunfélegyháza" ||
+        product.machineId === "PB-001" ||
+        product.machineId === machine.id
+      );
     }
     if (machine?.city === "Budaörs") {
-      return product.source === "Budaörs";
+      return (
+        product.source === "Budaörs" ||
+        product.machineId === "PB-003" ||
+        product.machineId === machine.id
+      );
     }
     return false;
   });
 
   // Create shelves from product shelf field for grouping (1. polc, 2. polc, 3. polc, etc.)
-  const shelfOrder = ['1. polc', '2. polc', '3. polc', '4. polc', '5. polc', '6. polc', '7. polc', '8. polc', '9. polc', '10. polc'];
+  const shelfOrder = [
+    "1. polc",
+    "2. polc",
+    "3. polc",
+    "4. polc",
+    "5. polc",
+    "6. polc",
+    "7. polc",
+    "8. polc",
+    "9. polc",
+    "10. polc",
+  ];
   const shelves = [...new Set(filteredProducts.map((product) => product.shelf))].sort((a, b) => {
     return shelfOrder.indexOf(a) - shelfOrder.indexOf(b);
   });
@@ -116,16 +132,12 @@ function MachinePage() {
         </Link>
 
         {!machine ? (
-          <p className="mt-10 text-sm text-muted-foreground">
-            Automata betöltése…
-          </p>
+          <p className="mt-10 text-sm text-muted-foreground">Automata betöltése…</p>
         ) : (
           <>
             <header
               className={`glass-strong mt-5 rounded-[1.5rem] p-5 sm:mt-7 sm:rounded-[2.5rem] sm:p-9 ${
-                machine.edition === "festival"
-                  ? "party-surface party-glow"
-                  : ""
+                machine.edition === "festival" ? "party-surface party-glow" : ""
               }`}
             >
               {machine.edition === "festival" && (
@@ -150,9 +162,7 @@ function MachinePage() {
                 <span className="inline-flex items-center gap-2">
                   <MapPin
                     className={`h-4 w-4 ${
-                      machine.edition === "festival"
-                        ? "text-foreground"
-                        : "text-brand"
+                      machine.edition === "festival" ? "text-foreground" : "text-brand"
                     }`}
                   />
                   {machine.address}, {machine.city}
@@ -162,9 +172,7 @@ function MachinePage() {
                   <span className="inline-flex items-center gap-2 font-semibold text-foreground">
                     <CalendarDays
                       className={`h-4 w-4 ${
-                        machine.edition === "festival"
-                          ? "text-foreground"
-                          : "text-brand"
+                        machine.edition === "festival" ? "text-foreground" : "text-brand"
                       }`}
                     />
                     {machine.period}
@@ -174,9 +182,7 @@ function MachinePage() {
                 <span className="inline-flex items-center gap-2">
                   <Clock
                     className={`h-4 w-4 ${
-                      machine.edition === "festival"
-                        ? "text-foreground"
-                        : "text-brand"
+                      machine.edition === "festival" ? "text-foreground" : "text-brand"
                     }`}
                   />
                   {machine.availability}
@@ -190,9 +196,7 @@ function MachinePage() {
               <p className="mt-4 text-xs text-muted-foreground">
                 {!productsLoading
                   ? `${filteredProducts.length} termék · frissítve: ${
-                      lastSync
-                        ? new Date(lastSync).toLocaleTimeString("hu-HU")
-                        : "-"
+                      lastSync ? new Date(lastSync).toLocaleTimeString("hu-HU") : "-"
                     }`
                   : "Termékek betöltése..."}
               </p>
@@ -200,9 +204,7 @@ function MachinePage() {
 
             <div className="mt-8 space-y-8 sm:mt-12 sm:space-y-12">
               {productsLoading ? (
-                <p className="text-sm text-muted-foreground">
-                  Termékek betöltése...
-                </p>
+                <p className="text-sm text-muted-foreground">Termékek betöltése...</p>
               ) : productsError ? (
                 <p className="text-sm text-muted-foreground">
                   A termékek betöltése nem sikerült. Kérjük, próbáld újra később.
@@ -241,13 +243,7 @@ function MachinePage() {
   );
 }
 
-function ProductCard({
-  product,
-  edition,
-}: {
-  product: MachineProduct;
-  edition: MachineEdition;
-}) {
+function ProductCard({ product, edition }: { product: MachineProduct; edition: MachineEdition }) {
   const isParty = edition === "festival";
 
   return (
@@ -256,16 +252,12 @@ function ProductCard({
         to="/termek/$productId"
         params={{ productId: product.id }}
         className={`hover-sheen group flex h-full flex-col rounded-[1.25rem] p-5 sm:rounded-[1.75rem] ${
-          isParty
-            ? "party-surface party-glow party-hover"
-            : "glass-panel"
+          isParty ? "party-surface party-glow party-hover" : "glass-panel"
         }`}
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="text-base font-bold tracking-tight sm:text-lg">
-              {product.name}
-            </h3>
+            <h3 className="text-base font-bold tracking-tight sm:text-lg">{product.name}</h3>
           </div>
 
           <span
@@ -281,9 +273,7 @@ function ProductCard({
           </span>
         </div>
 
-        <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
-          {product.info}
-        </p>
+        <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">{product.info}</p>
 
         <div className="mt-auto flex items-center justify-between gap-3 pt-5">
           <span className="text-lg font-extrabold tracking-tight">
@@ -292,13 +282,10 @@ function ProductCard({
 
           <span
             className={`inline-flex items-center gap-1.5 text-sm font-semibold ${
-              isParty
-                ? "text-[var(--party-pink)]"
-                : "text-brand-deep"
+              isParty ? "text-[var(--party-pink)]" : "text-brand-deep"
             }`}
           >
             Részletek
-
             <ArrowRight
               className={`h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 ${
                 isParty ? "text-[var(--party-pink)]" : ""
@@ -337,9 +324,7 @@ function MultiSheetProductCard({
         params={{ productId: product.catalogId }}
         search={{ gep: machineId }}
         className={`hover-sheen group flex h-full flex-col rounded-[1rem] p-1.5 sm:rounded-[1.75rem] sm:p-5 ${
-          isParty
-            ? "party-surface party-glow party-hover"
-            : "brand-surface brand-glow brand-hover"
+          isParty ? "party-surface party-glow party-hover" : "brand-surface brand-glow brand-hover"
         }`}
       >
         <div className="flex items-start justify-between gap-1.5 sm:gap-3">

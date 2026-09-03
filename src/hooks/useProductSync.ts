@@ -13,9 +13,7 @@ export const useProductSync = (intervalMinutes = 15) => {
       const result = await getMultiSheetProducts();
 
       if (!result.success) {
-        throw new Error(
-          result.error || "Nem sikerült betölteni a Google Sheet adatokat."
-        );
+        throw new Error(result.error || "Nem sikerült betölteni a Google Sheet adatokat.");
       }
 
       return result;

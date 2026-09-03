@@ -36,17 +36,17 @@ export function Navbar() {
       >
         <button
           onClick={() => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: "smooth" });
           }}
           className="flex min-w-0 items-center gap-2.5"
         >
-        <img
-          src={logo}
-          alt="Pillbox logó"
-          width={40}
-          height={40}
-          className="h-10 w-10 shrink-0 rounded-lg object-contain sm:h-11 sm:w-11 sm:rounded-xl"
-        />
+          <img
+            src={logo}
+            alt="Pillbox logó"
+            width={40}
+            height={40}
+            className="h-10 w-10 shrink-0 rounded-lg object-contain sm:h-11 sm:w-11 sm:rounded-xl"
+          />
           <span className="truncate text-base font-extrabold tracking-tight sm:text-lg">
             Pillbox
           </span>
@@ -59,7 +59,7 @@ export function Navbar() {
               onClick={() => {
                 const element = document.getElementById(link.id);
                 if (element) {
-                  element.scrollIntoView({ behavior: 'smooth' });
+                  element.scrollIntoView({ behavior: "smooth" });
                 }
               }}
               className="hover-underline-grow rounded-full px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
@@ -95,7 +95,7 @@ export function Navbar() {
                   onClick={() => {
                     const element = document.getElementById(link.id);
                     if (element) {
-                      element.scrollIntoView({ behavior: 'smooth' });
+                      element.scrollIntoView({ behavior: "smooth" });
                     }
                     setOpen(false);
                   }}

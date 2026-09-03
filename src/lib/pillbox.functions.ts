@@ -44,7 +44,12 @@ export const getProductCatalog = createServerFn({ method: "GET" }).handler(
  * Uses the multi-sheet service that reads from SHEET_ID_1, SHEET_ID_2, SHEET_ID_3.
  */
 export const getMultiSheetProducts = createServerFn({ method: "GET" }).handler(
-  async (): Promise<{ success: boolean; products: MultiSheetProduct[]; timestamp: string; error?: string }> => {
+  async (): Promise<{
+    success: boolean;
+    products: MultiSheetProduct[];
+    timestamp: string;
+    error?: string;
+  }> => {
     try {
       const { fetchProductsFromSheets } = await import("./multiSheetService");
       const products = await fetchProductsFromSheets();

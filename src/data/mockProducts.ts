@@ -5,4 +5,4 @@ import type { ProductRow } from "./types";
  * Swapping this array for a Google Sheets / Docs API fetch requires no
  * changes anywhere else in the app (see `productCatalogSource`).
  */
-export const MOCK_PRODUCT_ROWS: ProductRow[] = []
+export const MOCK_PRODUCT_ROWS: ProductRow[] = [];

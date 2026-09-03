@@ -44,10 +44,14 @@ export function Hero() {
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: isMobile ? 0.5 : 0.8, delay: isMobile ? 0.04 : 0.08, ease: [0.22, 1, 0.36, 1] }}
+              transition={{
+                duration: isMobile ? 0.5 : 0.8,
+                delay: isMobile ? 0.04 : 0.08,
+                ease: [0.22, 1, 0.36, 1],
+              }}
               className="mt-6 flex items-center gap-3 sm:mt-7 sm:gap-4"
             >
-            {/* <img
+              {/* <img
                src={logo}
                alt="Pillbox logó"
                width={64}
@@ -63,7 +67,11 @@ export function Hero() {
             <motion.h1
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: isMobile ? 0.6 : 0.9, delay: isMobile ? 0.07 : 0.14, ease: [0.22, 1, 0.36, 1] }}
+              transition={{
+                duration: isMobile ? 0.6 : 0.9,
+                delay: isMobile ? 0.07 : 0.14,
+                ease: [0.22, 1, 0.36, 1],
+              }}
               className="mt-5 text-[2rem] leading-[1.08] font-extrabold tracking-tight text-balance sm:mt-6 sm:text-6xl"
             >
               Az egészség nem várhat <span className="brand-gradient-text">nyitvatartásra</span>.
@@ -112,7 +120,11 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, scale: isMobile ? 0.97 : 0.94, y: 40 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: isMobile ? 0.8 : 1.1, delay: isMobile ? 0.1 : 0.2, ease: [0.22, 1, 0.36, 1] }}
+            transition={{
+              duration: isMobile ? 0.8 : 1.1,
+              delay: isMobile ? 0.1 : 0.2,
+              ease: [0.22, 1, 0.36, 1],
+            }}
             className="relative"
           >
             <div className="absolute -inset-6 -z-10 rounded-[3rem] bg-[image:var(--gradient-glow)] blur-2xl" />
