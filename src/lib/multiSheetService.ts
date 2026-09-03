@@ -21,7 +21,7 @@ const sheetConfigs = [
     // 1. Google Sheet -> 1. automata
     machineId: "PB-001",
     name: "Kiskunfélegyháza",
-    sheetId: process.env.SHEET_ID_1,
+    sheetId: process.env.SHEET_ID_2,
     range: "A2:C200",
     idColumn: 0,
     priceColumn: 1,
